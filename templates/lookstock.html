@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block main %}
+
+     <input id="ajax" autocomplete="off" autofocus placeholder="Query" type="text">
+
+        <ul id="ajax2"></ul>
+
+        <script>
+    // $.get IS THE SAME AS jQuey.get
+            let input = document.querySelector('#ajax');
+            input.addEventListener('keyup', function() {
+                $.get('/search?q=' + input.value, function(users) { 
+                    let html = '';
+                    for (let id in users) {
+                        let username = users[id].username;
+                        html += '<li>' + username + '</li>';
+                        console.log(users);
+                    }
+                    document.querySelector('#ajax2').innerHTML = html;
+                });
+            });
+
+        </script>
+{% endblock %}
+<!--
+1. We're creating a variable that gives us access to the input.
+2. We're adding a event listener to our variable. 'keyup' and a function()
+3. After keyup we're executing the anonymous function which does the following;
+4. the $.get syntax is allowing us to do an AJAX call, let's us make additional HTTP requests, programmatically.
+5. $.get is a function built into JQuery that's using some standard JavaScript functionality that will allow us to visit the url that ends with /search?q= + input.value and when the response is ready, this anonymous -> function(users) <- will get called back and it will get handed an argument/input that will be called users, which will be the JSON fomatted data.
+6. So our JavaScript function will receive all the JSON data as the argument.
+* input.value = whatever the human typed in

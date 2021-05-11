@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    History
+{% endblock %}
+
+{% block main %}
+<form action="/history" method="post">
+            <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Operation</th>
+                <th>Symbol</th>
+                <th>Price ($)</th>
+                <th>Shares</th>
+                <th>Date</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+                {% for stock in stocks %}
+                <tr>
+                    <td>{{ stock.operation }}</td>
+                    <td>{{ stock.symbol }}</td>
+                    <td>{{ stock.price }}</td>
+                    <td>{{ stock.shares }}</td>
+                    <td>{{ stock.date }}</td>
+                    <td>{{ stock.time }}</td>
+
+                </tr>
+                {% endfor %}
+
+        </tbody>
+    </table>
+
+    </div>
+{% endblock %}

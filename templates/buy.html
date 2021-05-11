@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Buy
+{% endblock %}
+
+{% block main %}
+<form action="/buy" method="post">
+    <div class="one form-group">
+        <input name="symbol" class="form-control" type="text" placeholder="Enter stock symbol" autofocus oninvalid="this.setCustomValidity('Please enter the stock symbol!')" oninput="setCustomValidity('')" required="">
+    </div>
+
+    <div class="one form-group">
+        <input name="shares" class="form-control" type="number" min="1" placeholder="Number of shares" oninvalid="this.setCustomValidity('Please enter a positive of shares')" oninput="setCustomValidity('')" required="" >
+    </div class="form-group">
+
+    <button id="buyy" type="submit" class="btn btn-primary">Buy</button>
+</form>
+
+{% endblock %}

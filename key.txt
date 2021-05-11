@@ -1,0 +1,2 @@
+$env:API_KEY=value
+pk_8a2179db5a5c4bd4a1c8e6e2d6e51cc8

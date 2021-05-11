@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Content
+{% endblock %}
+
+{% block body %}
+<!--_________________-->
+
+<div id="firstContainer" class="">
+  <div>
+        <h1 id="contentTitle" class="vivify driveInLeft
+     duration-2000 ">Learn to invest without<br> risking your money</h1>
+    </div>
+
+    <div>
+        <table class="charts-css column" id="my-chart">
+  <tbody>
+    <tr>
+      <td  style="--start: 0.2; --size: 0.3"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 0.4; --size: 0.4"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td style="--start: 0.8; --size: 0.5"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 0.6; --size: 0.6"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 1.0; --size: 0.7"> <span class="data">  </span> </td>
+    </tr>
+        <tr>
+      <td  style="--start: 1.0; --size: 0.8"> <span class="data">  </span> </td>
+    </tr>
+        <tr>
+      <td  style="--start: 1.0; --size: 0.9"> <span class="data">  </span> </td>
+    </tr>
+
+  </tbody>
+
+</table>
+</div>
+</div>
+
+<div id="arrow">
+<i id="arrowdown" class="fa fa-chevron-down" aria-hidden="true"></i>
+</div>
+
+<!--Graph-->
+
+
+<!---->
+
+    <!--GRID TEST__________________________________________-->
+
+<div id="containerz">
+
+  <div data-aos="zoom-in"> 
+    <h3>Buy stocks with real time prices</h3>
+    <p>Practice trading with a virtual $100,000 and play our stock market game. </p>
+</div>
+
+<div data-aos="zoom-in"> 
+  <h3>How it works?</h3>
+          <ul>
+              <li>Sing up</li>
+              <li>Start with 10.000$</li>
+              <li>Practice trading with your virtual cash. </li>
+          </ul>
+</div>
+
+    <div data-aos="zoom-in">  
+        <h3>Sign up today!</h3>    
+            If you're hesitant, scared of the risk or don't have any knowledge of the stock market... <br>
+    </div>
+        
+</div>
+    
+</div>
+<!-- Footer -->
+<div id="form-content">
+<div id="contactForm" class="form-group" data-aos="zoom-out">
+<h3>Contact Us</h3>
+    <form id="" action="" method="post">
+
+
+            <div class="one">
+            <input autocomplete="off"  required  class="form-control" placeholder="Name" type="text" oninvalid="this.setCustomValidity('Please enter your name!')" oninput="setCustomValidity('')">
+            </div>
+
+
+            <div class="one">
+            <input autocomplete="off" id="checklastname" required  class="form-control" name="lastname" placeholder="Last Name" type="text" oninvalid="this.setCustomValidity('Please enter your lastname!')" oninput="setCustomValidity('')">
+            </div>
+
+            <div class="one">
+            <input autocomplete="off" required class="form-control" placeholder="Email" type="email" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')">
+            </div>
+
+        <div class="one">
+        <textarea  style="resize:none" class="form-control" id="message" rows="5" cols="60" name="message" required=""  oninvalid="this.setCustomValidity('Please fill out this section!')" oninput="setCustomValidity('')"></textarea>
+        </div>
+
+        <button id="contactBtn" class="btn btn-primary" type="submit">Submit</button>
+
+    </form>
+</div>
+		
+</div>
+<!--
+data-aos="fade-up"
+data-aos="fade-down"
+data-aos="fade-right"
+data-aos="fade-left"
+data-aos="zoom-in"
+data-aos="zoom-out"
+data-aos="slide-up"
+data-aos="flip-up"
+data-aos="flip-down"
+data-aos="flip-righ"
+data-aos="flip-left"
+-->
+
+{% endblock %}

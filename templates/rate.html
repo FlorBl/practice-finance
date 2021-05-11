@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Rate
+{% endblock %}
+
+{% block main %}
+<div id="rating" >
+<form action="/rate" method="post">
+    <h5 class="one"> We're sad to see you go... Let us know why you're leaving?</h5>
+    <div class="one">
+        <input type="checkbox" name="vehicle1" value="Bike">
+        <label for="Unsatisfaction"> I wasn't satisfied with the services.</label><br>
+        <input type="checkbox" name="vehicle2" value="Car">
+        <label for="vehicle2"> I'd like to stop investing.</label><br>
+        <input type="checkbox" name="vehicle3" value="Boat">
+        <label for="vehicle3"> This is temporary, I'll be back.</label><br>
+        <input type="checkbox" name="vehicle3" value="Boat">
+        <label for="vehicle3"> I'd like to lean more before investing.</label><br>
+    </div>
+    <div class="one">
+        <textarea class="form-control" placeholder="Gives us more details on why you're leaving..." autofocus class="one" rows="6" cols="50"></textarea>
+     </div>
+     <div>
+        <input class="one" type="text" name="experience" placeholder="Please enter your email.">
+        </div>
+    </div>
+        <div>
+        <button id="one" class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</form>
+</div>
+{% endblock %}

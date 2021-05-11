@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<div  id="moving" class="form-group vivify popIn ">
+<h3> Log In</h3>
+<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto shadow p-4">
+    <form action="/login" method="post">
+    <div id="wrongUser" hidden class="one insufficent alert alert-danger" role="alert">
+    Wrong username or password!
+    </div>
+        <div class="one">
+            <input autocomplete="off" id="checkUser" autofocus class="form-control" name="username" placeholder="Username" type="text" oninvalid="this.setCustomValidity('Please enter your username!')" oninput="setCustomValidity('')" required="">
+
+        </div>
+
+        <div class="one">
+            <input required="" class="form-control" name="password" placeholder="Password" type="password" oninvalid="this.setCustomValidity('Please enter your password!')" oninput="setCustomValidity('')">
+        </div>
+
+        <div class="one">
+        <button name="loginButton" id="absolute" class="btn btn-primary">Log In</button>
+        </div>
+    </form>
+</div>
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function(){
+    var userInput = '';
+    const users = JSON.parse({{users|tojson}});
+
+    user = [];
+
+      for (let i = 0; i < users.length; i++){
+          user.push(users[i].username)
+      }
+    console.log(user);
+
+
+var searchUser = document.getElementById('checkUser');
+var loginButton = document.getElementById('absolute');
+
+loginButton.addEventListener('click', function(){
+if ($('#checkUser').val() == 0)
+    {
+        // If onclick input is 0, do nothing.
+    }
+else // If onclick input is not emply, do the following.
+    {
+    userInput = searchUser.value; // Get the value from from searchUser (username)
+
+    if (user.includes(userInput)){ // If that value is in our usernames database.
+
+    $('#moving').addClass('vivify swoopOutTop') // Add vivify Animation
+        micronSubmit()
+
+    $('#absolute').attr('type', 'submit'); // Allow the button to submit
+
+    }
+
+    else { // If its not
+
+        $('#wrongUser').attr('hidden', false); // Show our error message.
+        micronFunction(); // Call micronFunction for animation
+        $('#absolute').attr('type', 'button'); // Don't allow the button to submit
+
+    }
+
+    $('#checkUser').keyup(function(){ // When the user removes the input, remove the message.
+            if ($('#checkUser').val() == 0){
+            $('#wrongUser').attr('hidden', true);
+        }
+    })
+    }
+})
+
+})
+</script>
+{% endblock %}

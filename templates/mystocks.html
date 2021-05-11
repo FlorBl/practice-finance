@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+
+<!-- Example on how to render DATA with JSON from Flask (DataBase)-->
+<h4>My Stocks<h4>
+
+    <div> </div>
+    <div class="container"></div>
+
+
+<script>
+      const stock = JSON.parse({{stocks|tojson}});
+      console.log(stock);
+      document.querySelector(".container").innerHTML = JSON.stringify(stock, null, 2);
+
+console.log(stock[1]['username'])
+
+// console.log('Hello ' +stock[1]['username']+ ' you own ' +stock[1]['shares']+ ' of ' + stock[1]['symbol'])
+
+var html = [];
+var stockOwned = '';
+var mystocks = document.getElementById('mystocks');
+
+for (let i in stock){
+    stockOwned = "<li>"+stock[i]['symbol']+"<li>";
+    html.push(stockOwned);
+}
+    console.log(html)
+
+mystocks.insertAdjacentHTML('beforeend',html);
+
+//console.log(html);
+</script>
+{% endblock %}
+

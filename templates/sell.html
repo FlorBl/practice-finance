@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell
+{% endblock %}
+
+{% block main %}
+<form action="/sell" method="post">
+    <div class="one form-group">
+        <input autocomplete="off" class="form-control" name="symbol" type="text" placeholder="Stock symbol" autofocus oninvalid="this.setCustomValidity('Please enter the stock symbol!')" oninput="setCustomValidity('')" required="">
+    </div>
+    <div class="one form-group">
+        <input autocomplete="off" class="form-control" name="shares" type="number" min="1" placeholder="Number of shares" oninvalid="this.setCustomValidity('Please enter a positive number of shares')" oninput="setCustomValidity('')" required="">
+    </div class="form-group">
+    <button id="buy" type="submit" class="btn btn-primary">Sell</button>
+</form>
+
+        <script>
+
+var ourRequest = new XMLHttpRequest();
+
+ourRequest.open(stocks);
+mystocks.onload = function() {
+    console.log(stocks) 
+};
+mystocks.send();
+        </script>
+{% endblock %}

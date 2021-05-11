@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<div class="form-group">
+<h4 class="alert alert-success" role="alert"> {{ message }} </h4>
+
+<a href={{ url_for('index') }}>Log In</a>
+</div>
+{% endblock %}
