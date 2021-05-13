@@ -631,7 +631,6 @@ Login.html
             }
     
              #contactForm{
-                 border:1px solid red;
                 transform: scale(1.1, 1.1);
                 margin-top: 5%;
                 border-radius: 15px;
