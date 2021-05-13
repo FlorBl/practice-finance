@@ -1,13 +1,16 @@
 import os
 import re
-
+import mysql.connector
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_sqlalchemy import SQLAlchemy
 import json
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from helpers import apology, login_required, lookup, usd
 
@@ -36,8 +39,9 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL('sqlite:///finance.db')
 """
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
@@ -338,9 +342,9 @@ def checkBalance():
     cash = db.execute("SELECT cash FROM users WHERE id = (:id)", id=int(session["user_id"]))
     return render_template("quote.html", balance=json.dumps(cash))
 
-@app.route("/content", methods=["GET", "POST"])
-def content():
-    return render_template("content.html")
+@app.route("/welcome", methods=["GET", "POST"])
+def welcome():
+    return render_template("welcome.html")
 
 COUNTRIES = [
     "Canada",

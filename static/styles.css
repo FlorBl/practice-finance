@@ -144,13 +144,13 @@ width */
    
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: BurlyWood; 
+    background: rgba(181,212,204, 0.9); 
     border-radius: 10px;
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: bisque; 
+    background: rgba(181,212,204, 0.6); 
   }
 
 
