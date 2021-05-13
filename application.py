@@ -46,8 +46,8 @@ db = SQL("sqlite:///finance.db")
 if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 """
-usernames = db.execute("SELECT username FROM users")
-emails = db.execute("SELECT email FROM users")
+
+
 
 @app.route("/")
 @login_required
@@ -192,6 +192,7 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
+        usernames = db.execute("SELECT username FROM users")
         return render_template("login.html", users=json.dumps(usernames))
 
 
@@ -257,7 +258,8 @@ def register():
         new_user = db.execute("INSERT INTO users (username, hash, email, country) VALUES (?, ?, ?, ?)", request.form.get("username"), hash_password, request.form.get("email"), request.form.get("country"))
         message = 'Your registration is completed!'
         return render_template("success.html", message=message)
-
+    usernames = db.execute("SELECT username FROM users")
+    emails = db.execute("SELECT email FROM users")
     return render_template("register.html", countries=COUNTRIES,users=json.dumps(usernames), emails=json.dumps(emails))
 
 
@@ -321,6 +323,7 @@ def validUsername():
         usernames = db.execute("SELECT username FROM users WHERE username LIKE ?", "%" + q + "%")
     else:
         users = []
+    usernames = db.execute("SELECT username FROM users")    
     return jsonify(usernames)
 
 
