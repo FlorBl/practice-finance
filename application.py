@@ -9,8 +9,6 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 import json
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 from helpers import apology, login_required, lookup, usd
 
@@ -41,7 +39,9 @@ Session(app)
 
 
 # Configure CS50 Library to use SQLite database
-db = SQL('sqlite:///finance.db')
+db = SQL("sqlite:///finance.db")
+
+
 """
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
