@@ -79,7 +79,7 @@ def index():
     cash = db.execute("SELECT cash FROM users WHERE username = :username", username=username)[0]["cash"]
     total = sum(total_sum) + cash
 
-    return render_template("index.html", stocks=stocks, cash=usd(cash), total=usd(total), username=username)
+    return render_template("index.html",user=username, stocks=stocks, cash=usd(cash), total=usd(total), username=username)
 
 
 @app.route("/buy", methods=["GET", "POST"])
