@@ -1,6 +1,5 @@
 import os
 import re
-import mysql.connector
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
