@@ -50,8 +50,8 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-#engine = create_engine("sqlite:///finance.db")
-#db = scoped_session(sessionmaker(bind=engine))
+engine = create_engine("postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9")
+db = scoped_session(sessionmaker(bind=engine))
 """
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
