@@ -28,6 +28,9 @@ else:
     app.debug = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9'
 
+SQLALCHEMY_DATABASE_URL = 'postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9'
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -83,12 +86,6 @@ class User(db.Model):
         self.cash = cash
         self.country = country
         newUser = self.username
-        print(newUser)
-
-    def print_info(self):
-        print(f"New username : {self.username}")
-        print(f"Email of user : {self.email}")
-        print(f"Country of orign : {self.country}")
 
 
 class History(db.Model):
