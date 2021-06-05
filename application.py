@@ -25,7 +25,7 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/finance'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://twwjkgwovxdtag:e005dfc92db90ae434b82fd8e3a8611c4328eda76db2373c2bbe7ff78b733a46@ec2-34-232-191-133.compute-1.amazonaws.com:5432/d3oh5a4e3u68f4'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://twwjkgwovxdtag:e005dfc92db90ae434b82fd8e3a8611c4328eda76db2373c2bbe7ff78b733a46@ec2-34-232-191-133.compute-1.amazonaws.com:5432/d3oh5a4e3u68f4'
 
 
 # Ensure templates are auto-reloaded
