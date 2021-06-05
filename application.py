@@ -208,13 +208,13 @@ def buy():
     """Buy shares of stock"""
        # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        symbol = request.form.get("symbol")
+        symbol = request.form['symbol']
 
         # Stores user's symbol input, returns stock info
         share = lookup(symbol)
 
         # Stores user's shares quantity input
-        quantity = int(request.form.get("shares"))
+        quantity = int(request.form["shares"])
 
         # If the symbol searched or number of shares is invalid, return apology
         if share is None:
@@ -301,20 +301,20 @@ def login():
     if request.method == "POST":
 
         # Ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form["username"]:
             return apology("must provide username", 403)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form["password"]:
             return apology("must provide password", 403)
 
         # Get the input from username field
-        username =  request.form.get("username")
+        username =  request.form["username"]
 
         # Query database for that username
         rows = User.query.filter(User.username==username).all()
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0].hash, request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0].hash, request.form["password"]):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
@@ -349,7 +349,7 @@ def logout():
 def quote():
     if request.method == 'POST':
         # Saves stock's info entered by user
-        share = lookup(request.form.get("symbol"))
+        share = lookup(request.form["symbol"])
 
         # Contains the User Object
         username = User.query.filter(User.id==int(session["user_id"])).first()
@@ -384,26 +384,26 @@ def register():
         emails.append(user_emails[i].email)
     if request.method == "POST":
             # Ensure the user typed his wished username
-        if not request.form.get("username"):
+        if not request.form["username"]:
             return apology("must provide username", 403)
         # Ensure the user typed in his password
-        elif not request.form.get("password"):
+        elif not request.form["password"]:
             return apology("must provide password", 403)
 
         # Get username from input field
-        username =  request.form.get("username")
+        username =  request.form["username"]
         # Get email from input field
-        email = request.form.get("email")
+        email = request.form["email"]
         # Get country from input field
-        country = request.form.get("country")
+        country = request.form["country"]
         # Search if the user exists
         rows = User.query.filter(User.username==username).all()
         if len(rows) == 1:
             return apology("Username already exists!", 403)
 
         # Get the password and ensure that they match!
-        password = request.form.get("password")
-        confirm = request.form.get("confirmation")
+        password = request.form["password"]
+        confirm = request.form["confirmation"]
         if password != confirm:
             return apology("Password does not match!", 403)
 
@@ -452,10 +452,10 @@ def sell():
     if request.method == 'POST':
         
         # Lookup stock and save it's info
-        share = lookup(request.form.get("share"))
-        stock = request.form.get("share").upper()
+        share = lookup(request.form["share"])
+        stock = request.form["share"].upper()
         # Get # of shares
-        quantity = int(request.form.get("quantity"))
+        quantity = int(request.form["quantity"])
 
         if not share:
             return apology("Stock not found", 403)
@@ -527,8 +527,8 @@ def sell():
 @login_required
 def customer_service():
     if request.method == "POST":
-        email = request.form.get("email")
-        message = request.form.get("message")
+        email = request.form["email"]
+        message = request.form["message"]
         username = db.execute("SELECT username FROM users WHERE id = (:id)", id=int(session["user_id"]))[0]["username"]
 
         db.execute("INSERT INTO customer_service (username, message, email) VALUES (:username, :message, :email)", username=username, message=message, email=email)
@@ -544,9 +544,9 @@ def rate():
         user = User.query.filter(User.id==int(session["user_id"])).first()
         id=user.id
         emails = user.email
-        message = request.form.get('message')
-        reason = request.form.get('reason')
-        email = request.form.get('email')
+        message = request.form['message')
+        reason = request.form['reason')
+        email = request.form['email')
         reason = reason
         message = message
         email = email
@@ -629,8 +629,8 @@ def buycrypto():
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
         LoggedUser = username.username
-        CryptoSymbol = request.form.get('cryptosymbol')
-        amount = request.form.get('buyamount')
+        CryptoSymbol = request.form['cryptosymbol')
+        amount = request.form['buyamount')
         Crypto = crypto_info(CryptoSymbol)
         symbol = Crypto['symbol'].upper()
         name = Crypto['name']
@@ -688,8 +688,8 @@ def sellcrypto():
             cash = float(username.cash)
             LoggedUser = username.username
 
-            CryptoSymbol = request.form.get("cryptosmbl")
-            quantity = float(request.form.get("sellamount"))
+            CryptoSymbol = request.form["cryptosmbl"]
+            quantity = float(request.form["sellamount"])
 
             Crypto = crypto_info(CryptoSymbol)
 
@@ -761,10 +761,10 @@ def checkBalance():
 @app.route("/content", methods=["GET", "POST"])
 def welcome():
     if request.method == "POST":
-        name = request.form.get("name")
-        lastname = request.form.get("lastname")
-        email = request.form.get("email")
-        message = request.form.get("message")
+        name = request.form["name"]
+        lastname = request.form["lastname"]
+        email = request.form["email"]
+        message = request.form["message"]
         name=name
         lastname=lastname
         email=email
