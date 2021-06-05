@@ -47,7 +47,6 @@ if not os.environ.get("API_KEY"):
 """
 
 
-
 @app.route("/")
 @login_required
 def index():
