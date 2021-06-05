@@ -149,25 +149,6 @@ class Deleted(db.Model):
         self.message = message
         self.date = date
 
-class Crypto(db.Model):
-    __tablename__ = "crypto"
-    id = db.Column(db.Integer,db.ForeignKey('users.id'), primary_key=True)
-    username = db.Column(db.String)
-    Bitcoin = db.Column(db.Float)
-    Ethereum = db.Column(db.Float)
-    Binance = db.Column(db.Float)
-    Cardano = db.Column(db.Float)
-    Ripple = db.Column(db.Float)
-    Dogecoin = db.Column(db.Float)
-    def __init__(self, username, Bitcoin, Ethereum, Binance, Cardano, Ripple, Dogecoin):
-        self.username = username # self = this
-        self.Bitcoin = Bitcoin
-        self.Ethereum = Ethereum
-        self.Binance = Binance
-        self.Cardano = Cardano
-        self.Ripple = Ripple
-        self.Dogecoin = Dogecoin
-
 class Cryptocurrency(db.Model):
     __tablename__ = "cryptocurrency"
     id = db.Column(db.Integer,db.ForeignKey('users.id'))
@@ -185,60 +166,6 @@ class Cryptocurrency(db.Model):
         self.price = price
         self.date = date
 
-
-'''
-#Show portfolio of stocks
-# Store the User object of the logged user
-username = User.query.filter(User.id==16).first()
-
-# Get all stocks as objects portfolio
-stocks = Portfolio.query.filter_by(username=username.username).all()
-
-# The list for all totals
-total_sum = []
-
-# Iterate over the stocks list to append the information needed in index.html table
-for stock in stocks:
-    symbol = str(stock.symbol)
-    shares = int(stock.shares)
-    name = lookup(symbol)["name"]
-    price = lookup(symbol)["price"]
-    change = lookup(symbol)["change"]
-    total = shares * price
-    stock.name = name
-    stock.price = usd(price)
-    stock.total = usd(total)
-    total_sum.append(float(total))
-
-print(stocks[0].shares)
-#History.query.order_by(desc(History.date)).all(),
-
-# Join Users and Portfolio table on User.id=Portfolio.id
-#xx = db.session.query(User, Portfolio).filter(User.id == Portfolio.id).all()
-
-#zz = db.session.query(User, Portfolio).filter(User.id == Portfolio.id).filter(User.id=='1').all()
-
-#url = "https://api.nomics.com/v1/currencies/sparkline?key=c8817a587f4f0a951898c421825860c7c1124593&ids=BTC&start=2018-04-14T00%3A00%3A00Z&end=2018-05-14T00%3A00%3A00Z"
-
-username = User.query.filter(User.id==16).first()
-cryptosOwned = Cryptocurrency.query.filter_by(username=username.username).all()
-print(cryptosOwned)
-symbol = 'ADA'
-name = crypto_info(symbol)["name"]
-
-for crypto in cryptosOwned:
-    symbol = str(crypto.symbol)
-    shares = float(crypto.shares)
-    name = crypto_info(symbol)["name"]
-    price = crypto_info(symbol)["price"]
-    total = shares * price
-    crypto.name = name
-    crypto.price = usd(price)
-    crypto.total = usd(total)
-
-
-print(name)
-'''
 
 
 @app.route("/")
