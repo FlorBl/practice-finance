@@ -6,7 +6,7 @@
 
 {% block main %}
 
-
+Hello {{ username }}
     <table id="example" class="table table-striped">
         <thead>
             <tr>
@@ -30,7 +30,7 @@
                     <td>{{ stock.symbol }}</td>
                     <td>{{ stock.name }}</td>
                     <td>{{ stock.shares }}</td></td>
-                    <td>{{ stock.price }}  <sup>{{ stock.change }}</sup></td>
+                    <td>{{ stock.price }} $ <sup>{{ stock.change }}</sup></td>
                     <td>{{ stock.total }}</td>
                 </tr>
                 {% endfor %}

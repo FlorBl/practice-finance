@@ -5,24 +5,123 @@
 {% endblock %}
 
 {% block main %}
-<form action="/sell" method="post">
+              <div id="alert-warning" class="alert alert-warning" role="alert" style="display: none;">
+              </div>
+    <table id="selltable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td style="font-weight: bold;">{{ total }}</td>
+            </tr>
+        </tfoot>
+        <tbody>
+
+                {% for stocks in stockss %}
+                <tr>
+                    <td>{{ stocks.symbol }}</td>
+                    <td>{{ stocks.name }}</td>
+                    <td>{{ stocks.shares }}</td>
+                    <td>{{ stocks.price }}  <sup>{{ stocks.change }}</sup></td>
+                    <td>{{ stocks.total }}</td>
+                </tr>
+                {% endfor %}
+
+        </tbody>
+    </table>
+<div id="loading" class="loadingio-spinner-spin-g6wdppbvcis"><div class="ldio-pxsmqoait2h">
+<div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div>
+</div></div>
+<form>
+    <h6 id="transaction"></h6>
+    <h6 id="transaction-error"></h6>
     <div class="one form-group">
-        <input autocomplete="off" class="form-control" name="symbol" type="text" placeholder="Stock symbol" autofocus oninvalid="this.setCustomValidity('Please enter the stock symbol!')" oninput="setCustomValidity('')" required="">
-    </div>
-    <div class="one form-group">
-        <input autocomplete="off" class="form-control" name="shares" type="number" min="1" placeholder="Number of shares" oninvalid="this.setCustomValidity('Please enter a positive number of shares')" oninput="setCustomValidity('')" required="">
-    </div class="form-group">
-    <button id="buy" type="submit" class="btn btn-primary">Sell</button>
+        <select class="form-control one" required=""  id="stockInput" name="symbol" oninvalid="this.setCustomValidity('Please select symbol!')" oninput="setCustomValidity('')">
+
+        {% for stocks in stockss %} 
+            <option value="{{ stocks.symbol }}"> {{ stocks.name }}
+        {% endfor %}
+        <option value="" selected disabled>Select stock</option>
+        </div>
+
+        <div class="one form-group">
+            <input autocomplete="off" id="sharesInput" class="form-control" name="shares" type="number" min="1" max="stocks.shares" placeholder="Number of shares" oninvalid="this.setCustomValidity('Please enter a positive number of shares')" oninput="setCustomValidity('')" required="">
+        </div>
+
+        <button id="sell" type="submit" class="btn btn-primary">Sell</button>
 </form>
 
-        <script>
 
-var ourRequest = new XMLHttpRequest();
+<script>
+$(document).ready(function(){
+$('#loading').hide();
+const cash = JSON.parse({{balance|tojson}});
 
-ourRequest.open(stocks);
-mystocks.onload = function() {
-    console.log(stocks) 
-};
-mystocks.send();
+$('#sell').on('click', function(event){
+    var selectedQuantity = $('#sharesInput').val();
+    var selectedStock = $('#stockInput').val();
+
+
+
+
+        $('form').on('submit', function(event) {
+
+        /* This is our Ajax Call */
+        $.ajax({
+            data : {
+                share : $('#stockInput').val(),
+                quantity : $('#sharesInput').val()
+            },
+            /* Here we specify the request */
+            type : 'POST',
+            /* The route that we created */
+            url : '/sell',
+              error: function (jqXHR, textStatus, errorThrown) {
+                  if (jqXHR.status == 500) {
+                      alert('Internal error: ' + jqXHR.responseText);
+                  } else {
+                    $('#transaction-error').html('<div class="alert alert-danger form-control form-group" role="alert"> Verify number of shares!</div> ');
+                    setTimeout(function(){
+                    $('#transaction').remove();
+                    }, 2000);
+                  }
+
+},
+            
+            
+        beforeSend: function(){
+         $('#loading').show();
+    },
+        complete: function(){
+        $('#loading').hide();
+    },
+        })
+        /* Here we specify what happends after the ajax call is complete.
+        We'll use the .done function */
+        .done(function(data) { /* If error exists */
+            if (status == 400){
+            alert('error');
+            }
+            else { /* If error doesnt exist */
+            $('#transaction').html('<div class="alert alert-success form-control form-group" role="alert"> Transaction Completed!</div> ');
+            setTimeout(function(){
+                $('#transaction').remove();
+                }, 2000);
+                location.reload();
+            }
+        });
+
+        event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+    });
+});
+});
         </script>
 {% endblock %}

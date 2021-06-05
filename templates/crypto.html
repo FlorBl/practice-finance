@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Crypto
+{% endblock %}
+
+{% block main %}
+<h5 class="one">Buy & Sell Crypto</h5> 
+    <table id="example" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Crypto</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="4"></td>
+                <td style="font-weight: bold;">{{ total }}</td>
+            </tr>
+        </tfoot>
+        <tbody>
+
+                {% for crypto in cryptosOwned %}
+                <tr>
+                    <td>{{ crypto.symbol }}</td>
+                    <td>{{ crypto.price }} $</td>
+                    <td>{{ crypto.shares }}</td>
+                    <td>{{ crypto.cryptocash }} $</td></td>
+                </tr>
+                {% endfor %}
+
+        </tbody>
+    </table>
+<div class="form-group">
+<div class="one form-group" id="crypto_logos">
+    <img id="BTC" src="/static/btc.svg" width="35" height="35">
+    <img id="ETH" src="/static/eth.svg" width="35" height="35">
+    <img id="BNB" src="/static/bnb.svg" width="35" height="35">
+    <img id="XRP" src="/static/xrp.svg" width="35" height="35">
+    <img id="ADA" src="/static/ada.svg" width="35" height="35">
+    <img id="DOGE" src="/static/doge.svg" width="35" height="35">
+</div>
+<div class="form-group" id="showcrypto">
+</div>
+ <div class="form-group" id="cryptoforms">
+     <select class="form-control" name="" id="sellorbuy">
+        <option disabled selected value="">Select transaction type: </option>
+         <option value="sell">Sell</option>
+         <option value="buy">Buy</option>
+     </select>
+ <form id="buycrypto">
+    <div class="one form-group">
+        <select class="form-control one" required=""  id="cryptoid" name="cryptosymbol">
+
+        {% for crypto in cryptos %}
+        <option  value="{{ crypto.symbol }}" >{{ crypto.name }}               - Price: {{ crypto.price}} USD</option>
+        {% endfor %}
+        </div>
+
+
+        <div class="one form-group">
+            <input autocomplete="off" placeholder="Enter amount in USD" id="amountcad" class="form-control" name="buyamount" type="number" required="">
+        </div>
+
+        <button id="buy" type="submit" class="btn btn-primary">Buy</button>
+</form>
+
+<!-- SELL crypto-->
+<form id="sellcrypto">
+    <div class="one form-group">
+        <select class="form-control one" required=""  id="mycryptos" name="cryptosymbol">
+
+        {% for crypto in cryptosOwned %}
+        <option  value="{{ crypto.symbol }}" >{{ crypto.symbol }} &emsp; Quantity:&ensp; {{ crypto.shares}} </option>
+        {% endfor %}
+        </div>
+
+
+        <div class="one form-group">
+            <input autocomplete="off" id="quantitySell" placeholder="Enter amount in USD" class="form-control" name="" type="number" required="">
+        </div>
+
+        <button id="sellcrypto" type="submit" class="btn btn-primary">Sell</button>
+</form>
+</div>
+</div>
+<script>
+    $(document).ready(function() {
+        
+        $('#buy').on('click', function(){
+        $('form').on('submit', function(event) {
+            /* This is our Ajax Call */
+            $.ajax({
+                data : {
+                    cryptosymbol : $('#cryptoid').val(),
+                    buyamount : $('#amountcad').val()
+                },
+                /* Here we specify the request */
+                type : 'POST',
+                /* The route that we created */
+                url : '/buycrypto',
+            })
+            /* Here we specify what happends after the ajax call is complete.
+            We'll use the .done function */
+            .done(function(data) { /* If error exists */
+                if (data.error){
+    
+                }
+                else { /* If error doesnt exist */
+                    location.reload();
+    
+                }
+            });
+    
+            event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+        });
+    });
+    });
+
+/* Sell Form _________________________________ */
+$(document).ready(function() {
+    $('#buycrypto').hide();
+    $('#sellcrypto').hide();
+
+    $('#sellorbuy').on('change', function(){
+        var option = this.value
+        if(option === 'buy'){
+            $('#buycrypto').show();
+            $('#sellcrypto').hide();
+        }
+        if(option === 'sell'){
+            $('#buycrypto').hide();
+            $('#sellcrypto').show();
+        }
+    })
+
+    $('#sellcrypto').on('submit', function(event) {
+
+        /* This is our Ajax Call */
+        $.ajax({
+            data : {
+                cryptosmbl : $('#mycryptos').val(),
+                sellamount : $('#quantitySell').val()
+            },
+            /* Here we specify the request */
+            type : 'POST',
+            /* The route that we created */
+            url : '/sellcrypto',
+
+        })
+        /* Here we specify what happends after the ajax call is complete.
+        We'll use the .done function */
+        .done(function(data) { /* If error exists */
+            if (data.error){
+
+            }
+            else { /* If error doesnt exist */
+
+                    var x = $('#mycryptos').val();
+                    var y = $("[id=" + x + "]");
+                    y.attr('class', 'vivify rollOutTop');
+                    setTimeout(
+                        function() 
+                        {
+                            var x = $('#mycryptos').val();
+                            var y = $("[id=" + x + "]");
+                            y.attr('class', 'vivify pullDown');
+                        }, 1000);
+
+                    setTimeout(
+                        function() 
+                        {
+                            location.reload();
+                        }, 2000); 
+            
+            }
+        });
+
+        event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+    });
+});
+
+</script>
+
+{% endblock %}

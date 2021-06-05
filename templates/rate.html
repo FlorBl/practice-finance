@@ -5,29 +5,123 @@
 {% endblock %}
 
 {% block main %}
-<div id="rating" >
-<form action="/rate" method="post">
-    <h5 class="one"> We're sad to see you go... Let us know why you're leaving?</h5>
+<div id="rating" class="form-group">
+    <h5 id="accountdeleted" class="one"></h5>
+<form>
+    <h5 class="one"> We're sad to see you go...</h5>
+
     <div class="one">
-        <input type="checkbox" name="vehicle1" value="Bike">
-        <label for="Unsatisfaction"> I wasn't satisfied with the services.</label><br>
-        <input type="checkbox" name="vehicle2" value="Car">
-        <label for="vehicle2"> I'd like to stop investing.</label><br>
-        <input type="checkbox" name="vehicle3" value="Boat">
-        <label for="vehicle3"> This is temporary, I'll be back.</label><br>
-        <input type="checkbox" name="vehicle3" value="Boat">
-        <label for="vehicle3"> I'd like to lean more before investing.</label><br>
+    <select class="form-control" id="reason">
+        <option value="" disabled>Reason</option>
+        <option value="Unsatisfaction"> I wasn't satisfied with the services.</option>
+        <option value="Invest"> I want to start real investing.</option>
+        <option value="Temporary"> This is temporary, I'll be back.</option>
+        <option value="Learn">
+        I'd like to learn more about investing.</option>
+        <option value="Other">
+        Other.</option>
+        </select>
     </div>
+
+
     <div class="one">
-        <textarea class="form-control" placeholder="Gives us more details on why you're leaving..." autofocus class="one" rows="6" cols="50"></textarea>
+         <h4>Let us know why you're leaving?</h4> 
+        <textarea class="form-control" name="message" id="userMessage" placeholder="Gives us more details on why you're leaving..." autofocus class="one" rows="6" cols="50"></textarea>
      </div>
+
      <div>
-        <input class="one" type="text" name="experience" placeholder="Please enter your email.">
+        <h6 id="errorMessage"></h6>
+        <input class="one form-control" required type="text" id="emailmatch" name="emailuser" placeholder="Please enter your email.">
         </div>
-    </div>
+
+
         <div>
-        <button id="one" class="btn btn-primary" type="submit">Submit</button>
-    </div>
+        <button id="deletebutton" class="btn btn-primary" type="button">Submit</button>
+        </div>
 </form>
 </div>
+<script>
+
+$(document).ready(function(){
+    
+    var user_email = JSON.parse({{emails|tojson}});
+
+    console.log(user_email)
+
+    $('#deletebutton').click(function(){
+        
+    var emailInput = $('#emailmatch').val();
+    if ( user_email != emailInput){
+        $('#errorMessage').html('Email does not match');
+        $('#errorMessage').css('color', 'red');  
+        $('#deletebutton').attr('type', 'button');
+        console.log(emailInput)
+        var reason = $('#reason :selected').val();
+        var email = $('#emailmatch').val();
+        var message = $('textarea#userMessage').val();
+        console.log("Reason: "+reason+" Email: "+email+" Message: "+message)
+    }
+    else{
+     $("#a").html("Email does match");
+     $('#deletebutton').attr('type', '');
+     
+     //$('#accountdeleted').html('Your account has been deleted')
+    Swal.fire(
+      'Deleted!',
+      'Your account has been deleted.',
+      'success'
+    )
+  setTimeout(function() { 
+    window.location.href = '/content'; 
+ }, 2000);
+    }
+    })
+    $('#emailmatch').keyup(function(){
+        if($('#emailmatch').val() == 0){
+        $("#errorMessage").html("");
+    }
+
+
+})
+})
+
+/* AJAX */
+
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+
+        /* This is our Ajax Call */
+        $.ajax({
+            data : {
+                reason : $('#reason :selected').text(),
+                email : $('#emailmatch').val(),
+                message : $('textarea#userMessage').val()
+            },
+            /* Here we specify the request */
+            type : 'POST',
+            /* The route that we created */
+            url : '/rate'
+        })
+        /* Here we specify what happends after the ajax call is complete.
+        We'll use the .done function */
+        .done(function(data) { /* If error exists */
+            if (data.error){
+                alert('missing something')
+
+            }
+            else { /* If error doesnt exist */
+                $('form').hide();
+                $('#deletebutton').hide();
+
+            }
+        });
+
+        event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+    });
+});
+
+
+
+
+</script>
 {% endblock %}

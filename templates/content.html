@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Content
+{% endblock %}
+
+{% block body %}
+<!--_________________-->
+
+<div id="firstContainer" class="">
+  <div>
+        <h1 id="contentTitle" class="vivify driveInLeft
+     duration-2000 ">Learn to invest without<br> risking your money</h1>
+    </div>
+
+    <div>
+        <table class="charts-css column" id="my-chart">
+  <tbody>
+    <tr>
+      <td  style="--start: 0.2; --size: 0.3"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 0.4; --size: 0.4"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td style="--start: 0.8; --size: 0.5"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 0.6; --size: 0.6"> <span class="data">  </span> </td>
+    </tr>
+    <tr>
+      <td  style="--start: 1.0; --size: 0.7"> <span class="data">  </span> </td>
+    </tr>
+        <tr>
+      <td  style="--start: 1.0; --size: 0.8"> <span class="data">  </span> </td>
+    </tr>
+        <tr>
+      <td  style="--start: 1.0; --size: 0.9"> <span class="data">  </span> </td>
+    </tr>
+
+  </tbody>
+
+</table>
+</div>
+</div>
+
+<div id="arrow">
+<i id="arrowdown" class="fa fa-chevron-down" aria-hidden="true"></i>
+</div>
+
+<!--Graph-->
+
+
+<!---->
+
+    <!--GRID TEST__________________________________________-->
+
+<div id="containerz">
+
+  <div data-aos="zoom-in"> 
+    <h3>Buy stocks with real time prices</h3>
+    <p>Practice trading with a virtual $10,000 and play our stock market game. </p>
+</div>
+
+<div data-aos="zoom-in"> 
+  <h3>How it works?</h3>
+          <ul>
+              <li>Sing up</li>
+              <li>Start with 10.000$</li>
+              <li>Practice trading with your virtual cash. </li>
+          </ul>
+</div>
+
+    <div data-aos="zoom-in">  
+        <h3>Sign up today!</h3>    
+            If you're hesitant, scared of the risk or don't have any knowledge of the stock market... <br>
+    </div>
+        
+</div>
+    
+</div>
+<!-- Footer -->
+<div id="form-content">
+<h4>{{ message }}</h4>
+<div id="contactForm" class="form-group" data-aos="zoom-out">
+<h3 id="formtitle">Contact Us</h3>
+    <form>
+            <div class="one">
+            <input autocomplete="off"  required  class="form-control" id="nameInput" name="name" placeholder="Name" type="text" oninvalid="this.setCustomValidity('Please enter your name!')" oninput="setCustomValidity('')">
+            </div>
+
+
+            <div class="one">
+            <input autocomplete="off" id="lastnameInput" required  class="form-control" name="lastname" placeholder="Last Name" type="text" oninvalid="this.setCustomValidity('Please enter your lastname!')" oninput="setCustomValidity('')">
+            </div>
+
+            <div class="one">
+            <input autocomplete="off" id="emailInput" required class="form-control" name="email" placeholder="Email" type="email" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')">
+            </div>
+
+        <div class="one">
+        <textarea  style="resize:none" class="form-control" id="messageInput" rows="5" cols="60" name="message" required=""  oninvalid="this.setCustomValidity('Please fill out this section!')" oninput="setCustomValidity('')"></textarea>
+        </div>
+
+        <button id="contactBtn" class="btn btn-primary" type="submit">Submit</button>
+
+    </form>
+</div>
+		
+</div>
+
+
+<!-- Footer -->
+<footer class="text-center text-lg-start bg-light text-muted">
+  <!-- Section: Social media -->
+  <section
+    class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom"
+  >
+    <!-- Left -->
+    <div class="me-5 d-none d-lg-block">
+      <span>Get connected with us on social networks:</span>
+    </div>
+    <!-- Left -->
+
+    <!-- Right -->
+    <div>
+      <a><i class="fa fa-facebook"></i
+      ></a>
+      <a href="" class="me-4 text-reset">
+        <i class="fa fa-twitter"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fa fa-google"></i>
+      </a>
+      <a href="https://www.instagram.com/flbl_/" target="_blank" class="me-4 text-reset">
+        <i class="fa fa-instagram"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fa fa-linkedin"></i>
+      </a>
+      <a href="" class="me-4 text-reset">
+        <i class="fa fa-github"></i>
+      </a>
+    </div>
+    <!-- Right -->
+  </section>
+  <!-- Section: Social media -->
+
+  <!-- Section: Links  -->
+  <section class="">
+    <div class="container text-center text-md-start mt-5">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            <i class="fa fa-diamond me-3"></i> Watts
+          </h6>
+          <p>
+            You envision, we create.
+          </p>
+        </div>
+        <!-- Grid column -->
+
+
+        <!-- Grid column -->
+        <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+          <!-- Links -->
+          <h6 class="text-uppercase fw-bold mb-4">
+            Contact
+          </h6>
+          <p><i class="fa fa-home me-3"></i> Montreal, QC</p>
+          <p>
+            <i class="fa fa-envelope me-3"></i>
+            watts_projects@protonmail.com
+          </p>
+          <p><i class="fa fa-phone me-3"></i> + 438 509 9191</p>
+        </div>
+        <!-- Grid column -->
+      </div>
+      <!-- Grid row -->
+    </div>
+  </section>
+  <!-- Section: Links  -->
+
+  <!-- Copyright -->
+  <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2021 Copyright:
+    <a class="text-reset fw-bold" href="">Watts Projects</a>
+  </div>
+  <!-- Copyright -->
+</footer>
+<!-- Footer -->
+<!--
+data-aos="fade-up"
+data-aos="fade-down"
+data-aos="fade-right"
+data-aos="fade-left"
+data-aos="zoom-in"
+data-aos="zoom-out"
+data-aos="slide-up"
+data-aos="flip-up"
+data-aos="flip-down"
+data-aos="flip-righ"
+data-aos="flip-left"
+-->
+
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+
+        /* This is our Ajax Call */
+        $.ajax({
+            data : {
+                name : $('#nameInput').val(),
+                lastname : $('#lastnameInput').val(),
+                email : $('#emailInput').val(),
+                message : $('#messageInput').val()
+            },
+            /* Here we specify the request */
+            type : 'POST',
+            /* The route that we created */
+            url : '/content'
+        })
+        /* Here we specify what happends after the ajax call is complete.
+        We'll use the .done function */
+        .done(function(data) { /* If error exists */
+            if (data.error){
+
+            }
+            else { /* If error doesnt exist */
+                $('form').hide();
+                $('#formtitle').html('We will get back to you shortly!');
+                $('#contactForm').css("background-color","rgba(237,242,243,255)");
+            }
+        });
+
+        event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+    });
+});
+</script
+
+{% endblock %}

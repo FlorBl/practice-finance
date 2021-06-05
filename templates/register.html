@@ -6,7 +6,74 @@
 
 {% block main %}
 
+
+
+<div id="registerForm" class="form-group vivify driveInLeft">
+<h3>Register</h3>
+<h4> {{ message }}</h4>
+<ul id="userchek"></ul>
+<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto shadow p-4">
+<div id="signupCompleted"></div>
+    <form name="processInfo">
+
+
+            <div class="one">
+            <input autocomplete="off" id="checkname" required autofocus class="form-control" name="name" placeholder="Name" type="text" oninvalid="this.setCustomValidity('Please enter your name!')" oninput="setCustomValidity('')">
+            </div>
+
+
+            <div class="one">
+            <input autocomplete="off" id="checklastname" required autofocus class="form-control" name="lastname" placeholder="Last Name" type="text" oninvalid="this.setCustomValidity('Please enter your lastname!')" oninput="setCustomValidity('')">
+            </div>
+
+
+            <div class="one">
+            <input autocomplete="off" id="checkusername" required autofocus class="form-control" name="username" placeholder="Username" type="text" oninvalid="this.setCustomValidity('Please enter your username!')" oninput="setCustomValidity('')">
+            <div class="one registrationFormAlert" id="divSearchUsername"> </div>
+            </div>
+
+            <div class="one">
+            <input autocomplete="off" id="emailCheck" required class="form-control" name="email" placeholder="Email" type="email" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')">
+            <div class="one registrationFormAlert" id="divEmailSearch"> </div>
+            </div>
+
+
+            <div class="one">
+
+            <select class="form-control" required="" placeholder="country" id="country" name="country" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')" placeholder="Country">
+            {% for country in countries %} 
+                <option value="{{ country }}"> {{ country }}
+            {% endfor %}
+            <option value="" selected disabled>Country</option>
+            </div>
+
+            <div class="one">
+            <input class="form-control" required id="password"  name="password" placeholder="Password" type="password" oninvalid="this.setCustomValidity('Please enter your password!')" oninput="setCustomValidity('')">
+            </div>
+
+            <div class="one">
+            <input class="form-control" required id="confirmation" name="confirmation" placeholder="Confirm password" type="password" oninvalid="this.setCustomValidity('Please enter your password!')" oninput="setCustomValidity('')">
+                <div class="registrationFormAlert" id="divCheckPasswordMatch">
+            </div>
+
+            <div class="one">
+            <input autocomplete="off" class="form-control" name="birthday" id="birth" type="date">
+            </div>
+
+        <button id="button"  class="btn btn-primary" type="submit">Register</button>
+
+    </form>
+</div>
+</div>
+            <div hidden id="registrationCompleted">
+            <h5>Your ticket has been submitted, we will get back to you shortly.</h5>
+            <h5>Thank you!</h5>
+            </div>
+
+<div id="signupCompleted"></div>
+
 <script type="text/javascript" language="javascript">
+
 function checkPasswordMatch() {
     var password = $("#password").val();
     var confirmation = $("#confirmation").val();
@@ -37,15 +104,16 @@ $(document).ready(function () {
 
 
 document.addEventListener('DOMContentLoaded', function(){
+
     const users = JSON.parse({{users|tojson}});
+        /*console.log(users);*/
     var userCheck = document.getElementById('checkusername');
     var username = '';
-    console.log(users);
 
       let i;
       var user = [];
       for(i = 0; i < users.length; i++){
-          user.push(users[i].username);
+          user.push(users[i]);
       }
       console.log(user);
 
@@ -72,15 +140,17 @@ document.addEventListener('DOMContentLoaded', function(){
 })
 document.addEventListener('DOMContentLoaded', function(){
     const emails = JSON.parse({{emails|tojson}});
+    console.log(emails);
     var emailCheck = document.getElementById('emailCheck');
+
     var emailSearch = '';
 
       let i;
       var email = [];
       for(i = 0; i < emails.length; i++){
-          email.push(emails[i].email);
+          email.push(emails[i]);
       }
-      console.log(email);
+
     emailCheck.addEventListener('keyup', function(){
         emailSearch = emailCheck.value;
         console.log(emailSearch)
@@ -88,6 +158,9 @@ document.addEventListener('DOMContentLoaded', function(){
             $("#divEmailSearch").html("An account already exists with this email!");
             $("#divEmailSearch").css('color', 'red');
             $('#button').attr('disabled',true);   
+            }
+        else{
+            $('#divEmailSearch').html('');   
             }
         if($('#emailCheck').val().length == 0){
             $('#divEmailSearch').html('');
@@ -100,71 +173,54 @@ $('#button').submit(function(){
 })
 
 })
+$(document).ready(function(){
+     $('form').on('submit', function(event) {
 
+        /* This is our Ajax Call */
+        $.ajax({
+            data : {
+                username : $('#checkusername').val(),
+                email : $('#emailCheck').val(),
+                country : $('#country').val(),
+                password : $('#password').val(),
+                confirmation : $('#confirmation').val()
+            },
+            /* Here we specify the request */
+            type : 'POST',
+            /* The route that we created */
+            url : '/register',
+        beforeSend: function(){
+         $('#loading').show();
+    }, // After call is completed display this
+        complete: function(){
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Sing up completed!',
+                showConfirmButton: false,
+                timer: 2000
+  }),
+  // Wait 2 secs and then redirect to /login
+  setTimeout(function() { 
+    window.location.href = '/login'; 
+ }, 2000);
+
+    },
+        })
+        /* Here we specify what happends after the ajax call is complete.
+        We'll use the .done function */
+        .done(function(data) { /* If error exists */
+            if (data.error){
+;     
+            }
+            else { /* If error doesnt exist */
+                $('form').hide();
+            }
+        });
+
+        event.preventDefault(); /* Prevents the form from doing what it typically does, submit the form its way */
+    });
+})
 
 </script>
-
-<div id="registerForm" class="form-group vivify driveInLeft">
-<h3>Register</h3>
-<h4> {{ message }}</h4>
-<ul id="userchek"></ul>
-<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto shadow p-4">
-    <form name="processInfo" action="/register" method="post">
-
-
-            <div class="one">
-            <input autocomplete="off" id="checkname" required autofocus class="form-control" name="name" placeholder="Name" type="text" oninvalid="this.setCustomValidity('Please enter your name!')" oninput="setCustomValidity('')">
-            </div>
-
-
-            <div class="one">
-            <input autocomplete="off" id="checklastname" required autofocus class="form-control" name="lastname" placeholder="Last Name" type="text" oninvalid="this.setCustomValidity('Please enter your lastname!')" oninput="setCustomValidity('')">
-            </div>
-
-
-            <div class="one">
-            <input autocomplete="off" id="checkusername" required autofocus class="form-control" name="username" placeholder="Username" type="text" oninvalid="this.setCustomValidity('Please enter your username!')" oninput="setCustomValidity('')">
-            <div class="one registrationFormAlert" id="divSearchUsername"> </div>
-            </div>
-
-            <div class="one">
-            <input autocomplete="off" id="emailCheck" required class="form-control" name="email" placeholder="Email" type="email" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')">
-            <div class="one registrationFormAlert" id="divEmailSearch"> </div>
-            </div>
-
-
-            <div class="one">
-            <select class="form-control" required="" placeholder="country" id="country" name="country" oninvalid="this.setCustomValidity('Please enter your email!')" oninput="setCustomValidity('')" placeholder="Country">
-            {% for country in countries %} 
-                <option value="{{ country }}"> {{ country }}
-                <option value="" selected disabled>Country</option>
-            {% endfor %}
-            </div>
-
-            <div class="one">
-            <input class="form-control" required id="password"  name="password" placeholder="Password" type="password" oninvalid="this.setCustomValidity('Please enter your password!')" oninput="setCustomValidity('')">
-            </div>
-
-            <div class="one">
-            <input class="form-control" required id="confirmation" name="confirmation" placeholder="Confirm password" type="password" oninvalid="this.setCustomValidity('Please enter your password!')" oninput="setCustomValidity('')">
-                <div class="registrationFormAlert" id="divCheckPasswordMatch">
-            </div>
-
-            <div class="one">
-            <input autocomplete="off" class="form-control" name="birthday" id="birth" type="date">
-            </div>
-
-        <button id="button" disabled class="btn btn-primary" type="submit">Register</button>
-
-    </form>
-</div>
-</div>
-            <div hidden id="registrationCompleted">
-            <h5>Your ticket has been submitted, we will get back to you shortly.</h5>
-            <h5>Thank you!</h5>
-            </div>
-
-
-
-
 {% endblock %}

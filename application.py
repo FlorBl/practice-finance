@@ -1,28 +1,35 @@
+import sys
 import os
 import re
-from cs50 import SQL
-from datetime import datetime #
+from datetime import datetime
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 import json
-from flask_sqlalchemy import SQLAlchemy #
+from flask_sqlalchemy import SQLAlchemy
+from helpers import apology, login_required, lookup, usd, crypto_info
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy import and_, desc
 from decimal import Decimal
 import urllib.request
 import urllib
-from helpers import apology, login_required, lookup, usd
-
 # Configure application
 app = Flask(__name__)
 
+ENV = ''
+
+if ENV == 'dev':
+    app.debug = True # If in Devlopment Mode = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/finance'
+else:
+    app.debug = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9'
+
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-
 
 # Ensure responses aren't cached 
 @app.after_request
@@ -42,11 +49,9 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
-
-
+#engine = create_engine("sqlite:///finance.db")
+#db = scoped_session(sessionmaker(bind=engine))
 """
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
@@ -54,38 +59,227 @@ if not os.environ.get("API_KEY"):
 """
 
 
+# We need to add this line to not have any warnings
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# We create a DataBase object
+db = SQLAlchemy(app)
+
+#________________ DATABASE models __________________________
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    hash = db.Column(db.String, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    cash = db.Column(db.Numeric, default=10000, nullable=False)
+    country = db.Column(db.String, nullable=False)
+    def __init__(self, username, hash, email, cash, country):
+        # Keep track of id number.
+        # Details about users.
+        self.username = username # self = this
+        self.hash = hash
+        self.email = email
+        self.cash = cash
+        self.country = country
+        newUser = self.username
+        print(newUser)
+
+    def print_info(self):
+        print(f"New username : {self.username}")
+        print(f"Email of user : {self.email}")
+        print(f"Country of orign : {self.country}")
+
+
+class History(db.Model):
+    __tablename__ = "history"
+    transaction_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String, nullable=False)
+    operation = db.Column(db.String, nullable=False)
+    symbol = db.Column(db.String, nullable=False)
+    price = db.Column(db.Numeric, nullable=False)
+    shares = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, username, operation, symbol, price, shares, date):
+        self.username = username # self = this
+        self.operation = operation
+        self.symbol = symbol
+        self.price = price
+        self.shares = shares
+        self.date = date
+
+class Portfolio(db.Model):
+    __tablename__ = "portfolio"
+    id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    transaction_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    username = db.Column(db.String, nullable=False)
+    symbol = db.Column(db.Text, nullable=False)
+    shares = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    def __init__(self, id, username, symbol, shares,date):
+        self.id
+        self.username = username # self = this
+        self.symbol = symbol
+        self.shares = shares
+        self.date = date
+
+
+class Countries(db.Model):
+    __tablename__ = "countries"
+    name = db.Column(db.String, nullable=False, primary_key=True)
+    def __init__(self,country):
+        self.country = country
+
+class Contact(db.Model):
+    __tablename__ = "contact"
+    name = db.Column(db.String)
+    lastname = db.Column(db.String)
+    email = db.Column(db.String, nullable=False, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    def __init__(self,name, lastname, email, message):
+        self.name = name
+        self.lastname = lastname
+        self.email = email
+        self.message = message
+
+class Deleted(db.Model):
+    __tablename__ = "deleted_users"
+    reason = db.Column(db.Text, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow, primary_key=True)
+    def __init__(self,reason, email, message,date):
+        self.reason = reason
+        self.email = email
+        self.message = message
+        self.date = date
+
+class Crypto(db.Model):
+    __tablename__ = "crypto"
+    id = db.Column(db.Integer,db.ForeignKey('users.id'), primary_key=True)
+    username = db.Column(db.String)
+    Bitcoin = db.Column(db.Float)
+    Ethereum = db.Column(db.Float)
+    Binance = db.Column(db.Float)
+    Cardano = db.Column(db.Float)
+    Ripple = db.Column(db.Float)
+    Dogecoin = db.Column(db.Float)
+    def __init__(self, username, Bitcoin, Ethereum, Binance, Cardano, Ripple, Dogecoin):
+        self.username = username # self = this
+        self.Bitcoin = Bitcoin
+        self.Ethereum = Ethereum
+        self.Binance = Binance
+        self.Cardano = Cardano
+        self.Ripple = Ripple
+        self.Dogecoin = Dogecoin
+
+class Cryptocurrency(db.Model):
+    __tablename__ = "cryptocurrency"
+    id = db.Column(db.Integer,db.ForeignKey('users.id'))
+    transaction_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    username = db.Column(db.String, nullable=False)
+    symbol = db.Column(db.Text, nullable=False)
+    shares = db.Column(db.Numeric, nullable=False)
+    price = db.Column(db.Numeric)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    def __init__(self, id, username, symbol, shares, price, date):
+        self.id
+        self.username = username # self = this
+        self.symbol = symbol
+        self.shares = shares
+        self.price = price
+        self.date = date
+
+
+'''
+#Show portfolio of stocks
+# Store the User object of the logged user
+username = User.query.filter(User.id==16).first()
+
+# Get all stocks as objects portfolio
+stocks = Portfolio.query.filter_by(username=username.username).all()
+
+# The list for all totals
+total_sum = []
+
+# Iterate over the stocks list to append the information needed in index.html table
+for stock in stocks:
+    symbol = str(stock.symbol)
+    shares = int(stock.shares)
+    name = lookup(symbol)["name"]
+    price = lookup(symbol)["price"]
+    change = lookup(symbol)["change"]
+    total = shares * price
+    stock.name = name
+    stock.price = usd(price)
+    stock.total = usd(total)
+    total_sum.append(float(total))
+
+print(stocks[0].shares)
+#History.query.order_by(desc(History.date)).all(),
+
+# Join Users and Portfolio table on User.id=Portfolio.id
+#xx = db.session.query(User, Portfolio).filter(User.id == Portfolio.id).all()
+
+#zz = db.session.query(User, Portfolio).filter(User.id == Portfolio.id).filter(User.id=='1').all()
+
+#url = "https://api.nomics.com/v1/currencies/sparkline?key=c8817a587f4f0a951898c421825860c7c1124593&ids=BTC&start=2018-04-14T00%3A00%3A00Z&end=2018-05-14T00%3A00%3A00Z"
+
+username = User.query.filter(User.id==16).first()
+cryptosOwned = Cryptocurrency.query.filter_by(username=username.username).all()
+print(cryptosOwned)
+symbol = 'ADA'
+name = crypto_info(symbol)["name"]
+
+for crypto in cryptosOwned:
+    symbol = str(crypto.symbol)
+    shares = float(crypto.shares)
+    name = crypto_info(symbol)["name"]
+    price = crypto_info(symbol)["price"]
+    total = shares * price
+    crypto.name = name
+    crypto.price = usd(price)
+    crypto.total = usd(total)
+
+
+print(name)
+'''
+
+
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
-    # Store the username of the user logged
-    username = db.execute("SELECT username FROM users WHERE id= (:id)", id=int(session["user_id"]))[0]["username"]
+    #Show portfolio of stocks
+    # Store the User object of the logged user
+    username = User.query.filter(User.id==int(session["user_id"])).first()
 
-    # Get stocks portfolio
-    stocks = db.execute("SELECT * FROM portfolio WHERE username = :username ORDER BY symbol ASC", username=username)
+    # Get all stocks as objects portfolio
+    stocks = Portfolio.query.filter_by(username=username.username).all()
 
-    # List to add all totals
+    # The list for all totals
     total_sum = []
 
-     # Iterate over the stocks list to append the information needed in index.html table
+    # Iterate over the stocks list to append the information needed in index.html table
     for stock in stocks:
-        symbol = str(stock["symbol"])
-        shares = int(stock["shares"])
+        symbol = str(stock.symbol)
+        shares = int(stock.shares)
         name = lookup(symbol)["name"]
         price = lookup(symbol)["price"]
         change = lookup(symbol)["change"]
         total = shares * price
-        stock["change"] = change
-        stock["name"] = name
-        stock["price"] = usd(price)
-        stock["total"] = usd(total)
+        stock.name = name
+        stock.price = usd(price)
+        stock.total = usd(total)
         total_sum.append(float(total))
 
-    cash = db.execute("SELECT cash FROM users WHERE username = :username", username=username)[0]["cash"]
-    total = sum(total_sum) + cash
+    # Logged user's cash balance
+    cash = username.cash
 
-    return render_template("index.html",user=username, stocks=stocks, cash=usd(cash), total=usd(total), username=username)
+    # Get the Total balance
+    total = sum(total_sum) + float(cash)
 
+    return render_template("index.html", username=username.username,total=usd(total), stocks=stocks,cash=usd(cash))
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
@@ -94,10 +288,11 @@ def buy():
        # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         symbol = request.form.get("symbol")
-        # Store the dictionary returned from the search in a variable
+
+        # Stores user's symbol input, returns stock info
         share = lookup(symbol)
 
-        # Store the shares inputed
+        # Stores user's shares quantity input
         quantity = int(request.form.get("shares"))
 
         # If the symbol searched or number of shares is invalid, return apology
@@ -106,37 +301,54 @@ def buy():
         elif quantity < 1:
             return apology("value must be positive integer", 400)
 
-        # Store how much money the user has
-        cash = db.execute("SELECT cash FROM users WHERE id = (:id)", id=int(session["user_id"]))
+        # Get the current user's User Object
+        username = User.query.filter(User.id==int(session["user_id"])).first()
+        # Username of User
+        LoggedUser = username.username
+        # Gets User's ID #
+        id = username.id
+        # Gets User's cash balance
+        cash = username.cash
 
         # Store the value of purchase
         value = share["price"] * quantity
 
         # If the user don't have enough money, apologize
-        if int(cash[0]["cash"]) < value:
+        if cash < value:
             return apology("can't afford", 400)
         
-        # Get the current user's username
-        username = db.execute("SELECT username FROM users WHERE id= (:id)", id=int(session["user_id"]))[0]["username"]
 
         # Subtract the value of purchase from the user's cash
-        db.execute("UPDATE users SET cash = cash - :value WHERE id = :uid", value=value, uid=int(session['user_id']))
+        username.cash = float(cash) - value
+
+        # Add details to History table
+        operation='BUY'
+        symbol = symbol
+        price = share['price']
+        shares=quantity
+        date = datetime.now()
 
         # Add the transaction to the user's history
-        db.execute("INSERT INTO history (username, operation, symbol, price, shares) VALUES (:username, 'BUY', :symbol, :price, :shares)",
-            username=username, symbol=share["symbol"], price=share["price"], shares=quantity)
+        update_History = History(LoggedUser,operation, symbol, price, shares, date)
 
-        # Update the stock in portfolio
-        updated = db.execute("UPDATE portfolio SET shares = shares + :shares WHERE username = :username AND symbol = :symbol",
-            shares=quantity, username=username, symbol=share["symbol"])
+        # Check if stock exists in user's Portfolio
+        stock_exists = Portfolio.query.filter(and_(Portfolio.username==LoggedUser, Portfolio.symbol==symbol)).all()
 
-        if updated != 1:
-            # Add the stock to the user's portfolio if it doesn't exist
-            db.execute("INSERT INTO portfolio (username, symbol, shares) VALUES (:username, :symbol, :shares)",
-            username=username, symbol=share["symbol"], shares=quantity)
+        # Add stock to user's Portfolio if it doesn't exist
+        if len(stock_exists) != 1:
+            add_stock = Portfolio(id,LoggedUser,symbol,shares,date)
+            db.session.add(add_stock)
+        else:
+            # If stock exists, get it's ID
+            updatePortfolio = Portfolio.query.filter(and_(Portfolio.username==LoggedUser, Portfolio.symbol==symbol)).first()
+            id = updatePortfolio.id
+            updatePortfolio.shares += quantity
+            # Update the shares, after the transaction
 
 
-        # Send them to the portfolio
+        db.session.add(update_History)
+        db.session.commit()
+
         return redirect("/")
     else:
         return render_template("buy.html")
@@ -146,27 +358,21 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
+    # Gets User Object of logged user
+    username = User.query.filter_by(id=int(session["user_id"])).first()
 
-    username = db.execute("SELECT username FROM users WHERE id= (:id)", id=int(session["user_id"]))[0]["username"]
-    stocks = db.execute("SELECT * FROM history WHERE username = (:username) ORDER BY date, time DESC", username=username)
-
-    for stock in stocks:
-        symbol = str(stock["symbol"])
-        shares = int(stock["shares"])
-        operation = stock["operation"]
-        price = int(stock["price"])
-        date = str(stock["date"])
-        time = str(stock["time"])
+    # Saves user's username 
+    LoggedUser = username.username
+    # Gets user's stocks as objects
+    stocks = History.query.filter_by(username=LoggedUser).all()
 
 
-
-    return render_template("history.html", stocks=stocks, username=username)
+    return render_template("history.html", stocks=stocks, username=LoggedUser)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
     # Forget any user_id
     session.clear()
 
@@ -181,24 +387,29 @@ def login():
         elif not request.form.get("password"):
             return apology("must provide password", 403)
 
-        # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
-        
+        # Get the input from username field
+        username =  request.form.get("username")
 
+        # Query database for that username
+        rows = User.query.filter(User.username==username).all()
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0].hash, request.form.get("password")):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0].id
 
         # Redirect user to home page
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        usernames = db.execute("SELECT username FROM users")
-        return render_template("login.html", users=json.dumps(usernames))
+        # Copy usernames into the list for username availability
+        usernames2 = []
+        users = User.query.all()
+        for i in range(len(users)):
+            usernames2.append(users[i].username)
+        return render_template("login.html", users=json.dumps(usernames2), usernames=usernames2)
 
 
 @app.route("/logout")
@@ -216,8 +427,12 @@ def logout():
 @login_required
 def quote():
     if request.method == 'POST':
+        # Saves stock's info entered by user
         share = lookup(request.form.get("symbol"))
-        cash = db.execute("SELECT cash FROM users WHERE id = (:id)", id=int(session["user_id"]))
+
+        # Contains the User Object
+        username = User.query.filter(User.id==int(session["user_id"])).first()
+        user_cash = usd(username.cash)
 
         if not share:
             return apology("Stock not found", 403)
@@ -227,7 +442,7 @@ def quote():
         price=usd(share["price"]),
         symbol=share["symbol"],
         high=share["high"],
-        low=share["low"],balance=json.dumps(cash))
+        low=share["low"],balance=json.dumps(user_cash))
 
     """Get stock quote."""
     return render_template("quote.html")
@@ -243,14 +458,17 @@ def register():
         # Ensure the user typed in his password
         elif not request.form.get("password"):
             return apology("must provide password", 403)
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
-        email = db.execute("SELECT * FROM users WHERE email = ?", request.form.get("email"))
 
-        # Ensure username exists and password is correct
+        # Get username from input field
+        username =  request.form.get("username")
+        # Get email from input field
+        email = request.form.get("email")
+        # Get country from input field
+        country = request.form.get("country")
+        # Search if the user exists
+        rows = User.query.filter(User.username==username).all()
         if len(rows) == 1:
             return apology("Username already exists!", 403)
-        elif len(email) == 1:
-            return apology("A username already exist with that email!", 403)
 
         # Get the password and ensure that they match!
         password = request.form.get("password")
@@ -259,52 +477,130 @@ def register():
             return apology("Password does not match!", 403)
 
         # Ensure the user's password get converted into hashes when inserted into the database
-        hash_password = generate_password_hash(password)
-      
-        new_user = db.execute("INSERT INTO users (username, hash, email, country) VALUES (?, ?, ?, ?)", request.form.get("username"), hash_password, request.form.get("email"), request.form.get("country"))
+        hash = generate_password_hash(password)
+
+        # Create new user
+        cash = '10000'
+        new_user = User(username,hash,email,cash,country)
+        db.session.add(new_user)
+        db.session.commit()
         message = 'Your registration is completed!'
-        return render_template("success.html", message=message)
-    usernames = db.execute("SELECT username FROM users")
-    emails = db.execute("SELECT email FROM users")
-    return render_template("register.html", countries=COUNTRIES,users=json.dumps(usernames), emails=json.dumps(emails))
+        #return render_template("success.html", message=message)
+
+    # Copy username into a list for availability
+    usernames2 = []
+    users = User.query.all()
+    for i in range(len(users)):
+        usernames2.append(users[i].username)
+
+    emails = []
+    user_emails = User.query.all()
+    for i in range(len(user_emails)):
+        emails.append(user_emails[i].email)
+
+    return render_template("register.html", countries=COUNTRIES,users=json.dumps(usernames2),emails=json.dumps(emails))
 
 
 @app.route("/sell", methods=["GET", "POST"])
 @login_required
 def sell():
-    """Sell shares of stock"""
-       # User reached route via POST (as by submitting a form via POST)
+        #Sell shares of stock
+    username = User.query.get(int(session["user_id"]))
+        # Get all stocks as objects portfolio
+    stockss = Portfolio.query.filter_by(username=username.username).all()
+
+    balance = float("{:.2f}".format(username.cash))
+
+    stonks = []
+    stonk = Portfolio.query.all()
+    for i in range(len(stonk)):
+        stonks.append(stonk[i].symbol)
+
+    # Iterate over the stocks list to append the information needed in index.html table
+    for stocks in stockss:
+        symbol = str(stocks.symbol)
+        shares = int(stocks.shares)
+        name = lookup(symbol)["name"]
+        price = lookup(symbol)["price"]
+        change = lookup(symbol)["change"]
+        total = shares * price
+        stocks.name = name
+        stocks.price = usd(price)
+        stocks.total = usd(total)
+
     if request.method == 'POST':
-        share = lookup(request.form.get("symbol"))
-        stock = request.form.get("symbol").upper()
-        quantity = int(request.form.get('shares'))
+        
+        # Lookup stock and save it's info
+        share = lookup(request.form.get("share"))
+        stock = request.form.get("share").upper()
+        # Get # of shares
+        quantity = int(request.form.get("quantity"))
+
         if not share:
             return apology("Stock not found", 403)
         elif quantity < 1:
             return apology("Please enter the number of shares", 403)
 
-         # Store the dictionary returned from the search in a variable
+        # Store Total value, shares * quantity
         value = share["price"] * quantity
-        # Get the current user's username
-        username = db.execute("SELECT username FROM users WHERE id= (:id)", id=int(session["user_id"]))[0]["username"]
-        shares = db.execute("SELECT shares FROM portfolio WHERE username = (:username) AND symbol = (:stock)", username=username, stock=stock)
+        # Get the current user's user object
+        User_Object = User.query.filter(User.id==int(session["user_id"])).first()
+        # Username of User
+        username = User_Object.username
+        # Gets User's ID #
+        id = User_Object.id
+        # Gets User's cash balance
+        cash = User_Object.cash
 
-        cash = db.execute("SELECT cash FROM users WHERE id = (:id)", id=int(session["user_id"]))
+        
+        # Get number of shares the logged-in user has of the entered stock
+        user_shares = Portfolio.query.filter(and_(Portfolio.username==username, Portfolio.symbol==stock)).first()
+        shares = user_shares.shares
+
+
         if not shares:
             return apology("You don't own this stock", 403)
         # Check if the user has enough shares
-        if int(shares[0]["shares"]) < quantity:
+        if int(shares) < quantity:
             return apology("Not enough shares", 400)
-         # Store how much money the loggen in user has
-        db.execute("UPDATE users SET cash = cash + :value WHERE id = :uid", value=value, uid=int(session['user_id']))
-        db.execute("UPDATE portfolio SET shares = shares - :quantity WHERE username = (:username)", quantity=quantity, username=username)
-        db.execute("DELETE FROM portfolio WHERE shares = '0' AND username = (:username)", username=username)
-        # Add the transaction to the user's history
-        db.execute("INSERT INTO history (username, operation, symbol, price, shares) VALUES (:username, 'SELL', :symbol, :price, :shares)",
-            username=username, symbol=share["symbol"], price=share["price"], shares=quantity)
 
-    return render_template("sell.html")
-    """Sell shares of stock"""
+        # Update user's cash balance after transaction
+        updateCash = User.query.get(int(session["user_id"]))
+        updateCash.cash = float(cash) + value
+
+        # Get id of row matching the username and sold stock
+        updatePortfolio = Portfolio.query.filter(and_(Portfolio.username==username, Portfolio.symbol==stock)).first()
+
+        # Update shares after transaction
+        updateShares = Portfolio.query.get(updatePortfolio.transaction_id)
+        updateShares.shares -= quantity
+
+        # If 0 shares, remove stock from Portfolio
+        check_shares = Portfolio.query.filter(and_(Portfolio.username==username, Portfolio.shares=='0')).all()
+        # If there are rows with 0 shares.
+        if len(check_shares) == 1:
+            # Search for that row
+            deleteStock = Portfolio.query.filter(and_(Portfolio.username==username, Portfolio.shares=='0')).first()
+
+            # Get and delete the selected row
+            removeRow = Portfolio.query.get(deleteStock.transaction_id)
+            db.session.delete(removeRow)
+
+        operation='SELL'
+        price = share['price']
+        shares=quantity
+        date = datetime.now()
+        # Add the transaction to the user's history
+        UpdateHistory = History(username,operation, stock, price, shares, date)
+        db.session.add(UpdateHistory)
+        
+        # Saves changes
+        db.session.commit()
+        # return redirect("/")
+
+    return render_template("sell.html", stockss=stockss, balance=json.dumps(balance))
+    return jsonify({'error' : 'Missing data!'})
+
 
 @app.route("/customer_service", methods=["GET","POST"])
 @login_required
@@ -320,7 +616,198 @@ def customer_service():
 @app.route("/rate", methods=["GET", "POST"])
 @login_required
 def rate():
-    return render_template("rate.html")
+    user = User.query.filter(User.id==int(session["user_id"])).first()
+    id=user.id
+    emails = user.email
+    if request.method == 'POST':
+        user = User.query.filter(User.id==int(session["user_id"])).first()
+        id=user.id
+        emails = user.email
+        message = request.form.get('message')
+        reason = request.form.get('reason')
+        email = request.form.get('email')
+        reason = reason
+        message = message
+        email = email
+        date = datetime.now()
+        deleted = Deleted(reason,email,message,date)
+        db.session.add(deleted)
+
+        user_portfolio = Portfolio.query.filter(Portfolio.username==user.username).all()
+
+        x = []
+        for i in range(len(user_portfolio)):
+            x.append(user_portfolio[i])
+        if len(x) > 0:
+            delete = Portfolio.query.filter(Portfolio.username==user.username).first()
+            db.session.delete(delete)
+            db.session.commit()
+
+        delete_user = User.query.get(id)
+        db.session.delete(delete_user)
+        db.session.commit()
+        # Forget any user_id
+        session.clear()
+        deleteMessage = "You account has been deleted!"
+        # Redirect user to login form
+        return render_template("success.html", message=deleteMessage)
+        session.clear()
+        return redirect('/')
+
+
+    return render_template("rate.html", emails=json.dumps(emails))
+
+@app.route("/crypto", methods=["GET", "POST"])
+@login_required
+def crypto():
+        # Store the User object of the logged user
+    username = User.query.filter(User.id==int(session["user_id"])).first()
+
+    # Info about our 6 Cryptocurrencies
+    url = "https://api.nomics.com/v1/currencies/ticker?key=8359a16b23c77eed9ab3298d72106e7783bc32dc&ids=BTC,ETH,BNB,ADA,XRP,DOGE&interval=1d,30d&convert=USD&per-page=100&page=1"
+
+    crypto = urllib.request.urlopen(url)
+    cryptojson = crypto.read()
+    cryptojdata = json.loads(cryptojson)
+
+    cryptos = []
+    for i in range(len(cryptojdata)):
+        cryptos.append(cryptojdata[i])
+
+    for crypto in cryptos:
+        symbol = crypto['id'].upper()
+        name = crypto['name']
+        price = float(crypto['price'])
+        crypto['price'] = usd(price)
+        logo = crypto['logo_url']
+
+    # Get all cryptos as objects portfolio
+    cryptosOwned = Cryptocurrency.query.filter_by(username=username.username).all()
+
+    # The list for all totals
+    total_sum = []
+    user_cryptos = []
+    # The list for all totals
+    for i in range(len(cryptosOwned)):
+        user_cryptos.append(cryptosOwned[i])
+    # Iterate over the stocks list to append the information needed in index.html table
+    for crypto in user_cryptos:
+        symbol = str(crypto.symbol)
+        shares = float(crypto.shares)
+        price = float(crypto.price)
+        crypto.price = usd(price)
+        cryptocash = float(shares) * float(price)
+        crypto.cryptocash = usd(cryptocash)
+
+    return render_template("crypto.html",cryptos=cryptos, cryptosOwned=user_cryptos)
+
+@app.route("/buycrypto", methods=["GET", "POST"])
+@login_required
+def buycrypto():
+    if request.method == 'POST':
+        username = User.query.filter(User.id==int(session["user_id"])).first()
+        cash = float(username.cash)
+        LoggedUser = username.username
+        CryptoSymbol = request.form.get('cryptosymbol')
+        amount = request.form.get('buyamount')
+        Crypto = crypto_info(CryptoSymbol)
+        symbol = Crypto['symbol'].upper()
+        name = Crypto['name']
+        price = float(Crypto['price'])
+
+
+        cryptoPurchased = float(amount) / price
+        # Update user's balance
+        username.cash = cash - float(amount)
+
+        # Add details to History table
+        operation='BUY'
+        symbol = symbol
+        price = price
+        shares=cryptoPurchased
+        date = datetime.now()
+
+        # Add the transaction to the user's history
+        update_History = History(LoggedUser,operation, symbol, price, shares, date)
+        db.session.add(update_History)
+        db.session.commit()
+        # Check if stock exists in user's Portfolio
+        symbol_exists = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).all()
+        # Add stock to user's Portfolio if it doesn't exist
+        user_id = username.id
+        if len(symbol_exists) != 1:
+            add_symbol = Cryptocurrency(user_id,LoggedUser,symbol,shares,price,date)
+            db.session.add(add_symbol)
+            db.session.commit()
+        else:
+            # If stock exists, get it's ID
+            updatePortfolio = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).first()
+            id = updatePortfolio.transaction_id
+            UpdateNow = Cryptocurrency.query.get(id)
+            UpdateNow.shares += Decimal(shares)
+            db.session.commit()
+            # Update the shares, after the transaction
+
+            
+    return render_template("/crypto.html")
+
+
+# Sell crypto
+@app.route("/sellcrypto", methods=["GET", "POST"])
+def sellcrypto():
+        # Get all stocks as objects portfolio
+        username = User.query.filter(User.id==int(session["user_id"])).first()
+        # Save the logged user
+        LoggedUser = username.username
+        # Get user's cryptos
+        cryptos = Cryptocurrency.query.filter_by(username=username.username).all()
+        cash = float(username.cash)
+        if request.method == 'POST':
+            username = User.query.filter(User.id==int(session["user_id"])).first()
+            cash = float(username.cash)
+            LoggedUser = username.username
+
+            CryptoSymbol = request.form.get("cryptosmbl")
+            quantity = float(request.form.get("sellamount"))
+
+            Crypto = crypto_info(CryptoSymbol)
+
+            price = float(Crypto['price'])
+
+            # Check if stock exists in user's Portfolio
+            shares = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==CryptoSymbol)).all()
+            quantityOwed = shares[0].shares
+
+            if quantity > quantityOwed:
+                return apology('Enter a lower quantity', 400)
+            else:
+                cryptoSold = quantity * price
+                # Update user's balance
+                username.cash = cash + cryptoSold
+
+                # Add details to History table
+                operation='SELL'
+                symbol = CryptoSymbol
+                price = price
+                shares = quantity
+                date = datetime.now()
+
+                # Add the transaction to the user's history
+                update_History = History(LoggedUser,operation, symbol, price, shares, date)
+                db.session.add(update_History)
+                db.session.commit()
+                # Check if stock exists in user's Portfolio
+                symbol_exists = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).all()
+                # Add stock to user's Portfolio if it doesn't exist
+                user_id = username.id
+
+                # If stock exists, get it's ID
+                updatePortfolio = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).first()
+                id = updatePortfolio.transaction_id
+                UpdateNow = Cryptocurrency.query.get(id)
+                UpdateNow.shares -= Decimal(shares)
+                db.session.commit()
+        return render_template("crypto.html")
 
 
 def validUsername():
@@ -350,9 +837,35 @@ def checkBalance():
     cash = db.execute("SELECT cash FROM users WHERE id = (:id)", id=int(session["user_id"]))
     return render_template("quote.html", balance=json.dumps(cash))
 
-@app.route("/welcome", methods=["GET", "POST"])
+@app.route("/content", methods=["GET", "POST"])
 def welcome():
-    return render_template("welcome.html")
+    if request.method == "POST":
+        name = request.form.get("name")
+        lastname = request.form.get("lastname")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        name=name
+        lastname=lastname
+        email=email
+        message=message
+        add_message = Contact(name,lastname,email,message)
+        db.session.add(add_message)
+        db.session.commit()
+        message = 'We will get back to you shortly!'
+
+
+
+    return render_template("content.html")
+
+
+def main():
+    db.session.commit()
+
+if __name__ == "__main__":
+    with app.app_context():
+        main()
+
+
 
 COUNTRIES = [
     "Canada",
@@ -605,3 +1118,4 @@ COUNTRIES = [
   "Zambia",
   "Zimbabwe"
 ]
+

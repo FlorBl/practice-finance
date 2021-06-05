@@ -14,7 +14,6 @@
                 <th>Price ($)</th>
                 <th>Shares</th>
                 <th>Date</th>
-                <th>Time</th>
             </tr>
         </thead>
 
@@ -24,11 +23,9 @@
                 <tr>
                     <td>{{ stock.operation }}</td>
                     <td>{{ stock.symbol }}</td>
-                    <td>{{ stock.price }}</td>
+                    <td>{{ stock.price }} $</td>
                     <td>{{ stock.shares }}</td>
                     <td>{{ stock.date }}</td>
-                    <td>{{ stock.time }}</td>
-
                 </tr>
                 {% endfor %}
 

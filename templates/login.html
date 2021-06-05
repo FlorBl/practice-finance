@@ -5,8 +5,12 @@
 {% endblock %}
 
 {% block main %}
+
 <div  id="moving" class="form-group vivify popIn ">
 <h3> Log In</h3>
+<ul>
+
+</ul>
 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 m-auto shadow p-4">
     <form action="/login" method="post">
     <div id="wrongUser" hidden class="one insufficent alert alert-danger" role="alert">
@@ -29,11 +33,11 @@
 </div>
 
 <script>
-
+/*
 document.addEventListener('DOMContentLoaded', function(){
     var userInput = '';
     const users = JSON.parse({{users|tojson}});
-
+    
     user = [];
 
       for (let i = 0; i < users.length; i++){
@@ -80,5 +84,6 @@ else // If onclick input is not emply, do the following.
 })
 
 })
+*/
 </script>
 {% endblock %}

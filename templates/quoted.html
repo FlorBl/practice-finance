@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block main %}
-    <h5>Your balance is <p class="cashcontainer"></p></h5>
+    <h5>Your available balance is<p class="cashcontainer">$</p></h5>
 
 <div>
   <ul>
     <li> Company: {{ name }}  </li>
     <li> Symbol: ({{ symbol }})</li>
-    <li>Price per share: <p id="price">{{ price }}</p></li>
-    <li>52 Week High: ${{ high }}</li>
-    <li>52 Week Low: ${{ low }}</li>
+    <li>Price per share: <p id="price">{{ price }} $</p></li>
+    <li>52 Week High: {{ high }} $</li>
+    <li>52 Week Low: {{ low }} $</li>
   </ul>
 </div>
 
@@ -30,41 +30,71 @@
         <input name="shares" sutofocus class="form-control" type="number" min="1" placeholder="Number of shares" oninvalid="this.setCustomValidity('Please enter a positive of shares')" oninput="setCustomValidity('')" required="" >
     </div class="form-group">
 
-    <button id="{{ symbol }}" disabled type="submit" class="btn disableButton btn-primary" onclick="buystock(this.id)">Buy</button>
+    <button id="{{ symbol }}" type="button" class="btn disableButton btn-primary" onclick="buystock(this.id)">Buy</button>
 
 </form>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
+
+$(document).ready(function(){
 var message = document.getElementById('message');
 var insertbalance = document.querySelector('cashcontainer');
+  const cash = JSON.parse({{balance|tojson}});
+  console.log(cash);
+     
+var userbalance = document.querySelector(".cashcontainer").innerHTML = cash;
+console.log(userbalance);
 
-      const cash = JSON.parse({{balance|tojson}});
-     console.log(cash[0]['cash']);
-   var userbalance = document.querySelector(".cashcontainer").innerHTML = JSON.stringify(cash[0]['cash'], null, 2);
-      console.log(cash);  
+$(document).on('keyup', function(){
+var shares = $('input[name="shares"]').val();
+var price = document.getElementById('price').innerText;
+var total = shares * price;
+
+console.log(`Shares: ${shares}, Price: ${price}, Total: ${total}... User's balance: ${userbalance}`);
+
+if (userbalance < total){
+      console.log('Insufficent funds')
+  }
+  else 
+  {
+    console.log('working');
+
+  }
+
+
+})
+
 
 document.addEventListener('keyup', function(){
+
 var shares = $('input[name="shares"]').val();
-console.log(shares);
 var price = document.getElementById('price').innerText;
-console.log(price)
 var total = shares * price;
 
   if (userbalance < total){
     $('.insufficent').attr('hidden',false);
-
+    $('.disableButton').attr('type','button');
+    alert('Insufficent');
   }
   else
   {
-    $('.disableButton').attr('disabled',false);
+    $('.insufficent').attr('hidden',true);
+   // $('.disableButton').attr('type','submit');
 
   }
 })
+$('button').on('click', function(event){
+    if (userbalance < total){
+      alert('Insufficent funds')
+  }
+  else
+  {
+    alert('working');
 
+  }
 })
-
-
+});
 </script>
+
 
 {% endblock %}
