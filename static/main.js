@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
 var apiKey = "pk_8a2179db5a5c4bd4a1c8e6e2d6e51cc8";
-var stockinfo = document.getElementById("stockinfo"); // variable 
+ // variable 
 var inputt = document.getElementById("symbolone");
 
 document.addEventListener('keyup', function (){
@@ -67,19 +67,18 @@ var symbol = document.getElementById('symbolone');
         form.submit();
 }
 
-// Buy stock
+// Buy stock 
 function buystock(clicked_id){
     var form = document.getElementById('buystock');
     var symbol = document.getElementById('stocksymbol');
             symbol.value = clicked_id;
             form.submit();
             
-    }
+    } 
+
+    
 
 // Index.html, Sell button
-function sellbutton(){
-        alert('button clicked');
-}
 
 function micronFunction(){
     micron.getEle("#wrongUser").interaction("shake").duration(".35").timing("ease-out");
@@ -105,8 +104,8 @@ document.addEventListener('scroll', function(){
 
 
 // AOS function
+
 AOS.init({
     duration: 1200,
   })
 
-  
