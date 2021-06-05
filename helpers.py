@@ -1,10 +1,13 @@
 import os
 import requests
 import urllib.parse
-
-from flask import redirect, render_template, request, session
+import json
+import urllib
+from flask import redirect, render_template, request, session, json
 from functools import wraps
-
+from requests import Request, Session
+from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
+import json
 
 def apology(message, code=400):
     """Render message as an apology to user."""
@@ -30,7 +33,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
-            return redirect("/welcome")
+            return redirect("/content")
         return f(*args, **kwargs)
     return decorated_function
 
@@ -65,3 +68,25 @@ def lookup(symbol):
 def usd(value):
     """Format value as USD."""
     return f"{value:,.2f}"
+
+# Crypto function, returns information about the crypto
+def crypto_info(selectedSymbol):
+    try:
+        api_key = 'c8817a587f4f0a951898c421825860c7c1124593'
+        url = f"https://api.nomics.com/v1/currencies/ticker?key={api_key}&ids={urllib.parse.quote_plus(selectedSymbol)}&interval=1dd&convert=USD"
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+
+    try:
+        crypto = response.json()
+        return {
+            "symbol": crypto[0]["symbol"],
+            "name": crypto[0]["name"],
+            "price": float(crypto[0]["price"]),
+            "logo": crypto[0]["logo_url"]
+        }
+    except (KeyError, TypeError, ValueError):
+        return None
+        
