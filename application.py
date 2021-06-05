@@ -19,7 +19,6 @@ import urllib
 app = Flask(__name__)
 
 ENV = ''
-engine = create_engine("postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9")
 
 
 if ENV == 'dev':
@@ -66,7 +65,7 @@ if not os.environ.get("API_KEY"):
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # We create a DataBase object
-db = scoped_session(sessionmaker(bind=engine))
+db = SQLAlchemy(app)
 
 #________________ DATABASE models __________________________
 class User(db.Model):
