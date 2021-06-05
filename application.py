@@ -19,6 +19,8 @@ import urllib
 app = Flask(__name__)
 
 ENV = ''
+engine = create_engine("postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9")
+
 
 if ENV == 'dev':
     app.debug = True # If in Devlopment Mode = True
@@ -43,23 +45,11 @@ def after_request(response):
 # Custom filter
 app.jinja_env.filters["usd"] = usd
 
-# configure Session class with desired options
-Session = sessionmaker()
-
-# later, we create the engine
-engine = create_engine('postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9')
-
-# associate it with our custom Session class
-Session.configure(bind=engine)
-
-
-
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-# work with the session
-session = Session(app)
+Session(app)
 
 # Configure CS50 Library to use SQLite database
 #engine = create_engine("sqlite:///finance.db")
@@ -70,12 +60,13 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 """
 
+
 # We need to add this line to not have any warnings
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # We create a DataBase object
-db = SQLAlchemy(app)
+db = scoped_session(sessionmaker(bind=engine))
 
 #________________ DATABASE models __________________________
 class User(db.Model):
