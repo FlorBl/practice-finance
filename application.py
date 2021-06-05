@@ -10,9 +10,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import json
 from flask_sqlalchemy import SQLAlchemy
 from helpers import apology, login_required, lookup, usd, crypto_info
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_, desc
 from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy import and_, desc
 from decimal import Decimal
 import urllib.request
 import urllib
@@ -28,8 +27,6 @@ else:
     app.debug = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9'
 
-SQLALCHEMY_DATABASE_URL = 'postgres://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9'
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
