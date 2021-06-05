@@ -58,8 +58,19 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 """
 
+# configure Session class with desired options
+Session = sessionmaker()
 
+# later, we create the engine
+engine = create_engine('postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9')
+
+# associate it with our custom Session class
+Session.configure(bind=engine)
+
+# work with the session
+session = Session()
 # We need to add this line to not have any warnings
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # We create a DataBase object
