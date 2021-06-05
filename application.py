@@ -372,6 +372,16 @@ def quote():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
+    # Copy username into a list for availability
+    usernames2 = []
+    users = User.query.all()
+    for i in range(len(users)):
+        usernames2.append(users[i].username)
+
+    emails = []
+    user_emails = User.query.all()
+    for i in range(len(user_emails)):
+        emails.append(user_emails[i].email)
     if request.method == "POST":
             # Ensure the user typed his wished username
         if not request.form.get("username"):
@@ -408,16 +418,6 @@ def register():
         message = 'Your registration is completed!'
         #return render_template("success.html", message=message)
 
-    # Copy username into a list for availability
-    usernames2 = []
-    users = User.query.all()
-    for i in range(len(users)):
-        usernames2.append(users[i].username)
-
-    emails = []
-    user_emails = User.query.all()
-    for i in range(len(user_emails)):
-        emails.append(user_emails[i].email)
 
     return render_template("register.html", countries=COUNTRIES,users=json.dumps(usernames2),emails=json.dumps(emails))
 
