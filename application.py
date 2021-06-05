@@ -43,6 +43,17 @@ def after_request(response):
 # Custom filter
 app.jinja_env.filters["usd"] = usd
 
+# configure Session class with desired options
+Session = sessionmaker()
+
+# later, we create the engine
+engine = create_engine('postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9')
+
+# associate it with our custom Session class
+Session.configure(bind=engine)
+
+
+
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
 app.config["SESSION_PERMANENT"] = False
@@ -58,17 +69,6 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 """
 
-# configure Session class with desired options
-Session = sessionmaker()
-
-# later, we create the engine
-engine = create_engine('postgresql://dtjowfzaqlolpp:abdb685c3766245e9a657874bf78b8c1f11aab9da5da1cba43ff8bb30dd5a4f9@ec2-3-233-7-12.compute-1.amazonaws.com:5432/d2pctr378ve0k9')
-
-# associate it with our custom Session class
-Session.configure(bind=engine)
-
-# work with the session
-session = Session()
 # We need to add this line to not have any warnings
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -305,6 +305,8 @@ def history():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
+    # Forget any user_id
+    session.clear()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
