@@ -208,6 +208,7 @@ def index():
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     """Buy shares of stock"""
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
