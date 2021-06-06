@@ -18,7 +18,7 @@ import urllib
 # Configure application
 app = Flask(__name__)
 
-ENV = ''
+ENV = 'dev'
 
 
 if ENV == 'dev':
@@ -168,9 +168,14 @@ class Cryptocurrency(db.Model):
         self.price = price
         self.date = date
 
-
-
-
+username = 'w'
+remember = User.query.filter(User.username==username).all()
+if len(remember) != 1:
+    print('doesnt exist')
+else:
+    print('exists')
+id = remember[0].id
+print(id)
 @app.route("/")
 @login_required
 def index():
@@ -284,7 +289,7 @@ def buy():
 def history():
     """Show history of transactions"""
     # Gets User Object of logged user
-    username = User.query.filter_by(id=int(session["user_id"])).first()
+    username = User.query.filter(User.id==int(session["user_id"])).first()
 
     # Saves user's username 
     LoggedUser = username.username
@@ -350,6 +355,7 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         # Saves stock's info entered by user
         share = lookup(request.form["symbol"])
@@ -429,7 +435,8 @@ def register():
 @login_required
 def sell():
         #Sell shares of stock
-    username = User.query.get(int(session["user_id"]))
+    #username = User.query.get(int(session["user_id"]))
+    username = User.query.filter(User.id==int(session["user_id"])).first()
         # Get all stocks as objects portfolio
     stockss = Portfolio.query.filter_by(username=username.username).all()
 
@@ -529,6 +536,7 @@ def sell():
 @app.route("/customer_service", methods=["GET","POST"])
 @login_required
 def customer_service():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == "POST":
         email = request.form["email"]
         message = request.form["message"]
@@ -628,6 +636,7 @@ def crypto():
 @app.route("/buycrypto", methods=["GET", "POST"])
 @login_required
 def buycrypto():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
@@ -680,6 +689,7 @@ def buycrypto():
 @app.route("/sellcrypto", methods=["GET", "POST"])
 @login_required
 def sellcrypto():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
