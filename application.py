@@ -303,20 +303,20 @@ def login():
     if request.method == "POST":
 
         # Ensure username was submitted
-        if not request.form.get("username"):
+        if not request.form["username"]:
             return apology("must provide username", 403)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        elif not request.form["password"]:
             return apology("must provide password", 403)
 
         # Get the input from username field
-        username =  request.form.get("username")
+        username =  request.form["username"]
 
         # Query database for that username
         rows = User.query.filter(User.username==username).all()
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0].hash, request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0].hash, request.form["password"]):
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
