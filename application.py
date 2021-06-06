@@ -175,7 +175,7 @@ class Cryptocurrency(db.Model):
 def index():
     #Show portfolio of stocks
     # Store the User object of the logged user
-    username = User.query.filter(User.id==int(session["user_id"])).first()
+    username = User.query.filter(User.id==int(session["users.id"])).first()
 
     # Get all stocks as objects portfolio
     stocks = Portfolio.query.filter_by(username=username.username).all()
@@ -320,7 +320,7 @@ def login():
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0].id
+        session["users.id"] = rows[0].id
 
         # Redirect user to home page
         return redirect("/")
