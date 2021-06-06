@@ -170,6 +170,7 @@ class Cryptocurrency(db.Model):
 
 
 
+
 @app.route("/")
 @login_required
 def index():
@@ -208,8 +209,7 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-    username = User.query.filter(User.id==int(session["user_id"])).first()
-       # User reached route via POST (as by submitting a form via POST)
+    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         symbol = request.form["symbol"]
 
@@ -299,7 +299,11 @@ def login():
     """Log user in"""
     # Forget any user_id
     session.clear()
-
+    # Copy usernames into the list for username availability
+    usernames2 = []
+    users = User.query.all()
+    for i in range(len(users)):
+        usernames2.append(users[i].username)
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
@@ -328,11 +332,6 @@ def login():
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
-        # Copy usernames into the list for username availability
-        usernames2 = []
-        users = User.query.all()
-        for i in range(len(users)):
-            usernames2.append(users[i].username)
         return render_template("login.html", users=json.dumps(usernames2), usernames=usernames2)
 
 
@@ -350,7 +349,6 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
-    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         # Saves stock's info entered by user
         share = lookup(request.form["symbol"])
@@ -530,7 +528,6 @@ def sell():
 @app.route("/customer_service", methods=["GET","POST"])
 @login_required
 def customer_service():
-    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == "POST":
         email = request.form["email"]
         message = request.form["message"]
@@ -630,7 +627,6 @@ def crypto():
 @app.route("/buycrypto", methods=["GET", "POST"])
 @login_required
 def buycrypto():
-    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
@@ -681,15 +677,8 @@ def buycrypto():
 
 # Sell crypto
 @app.route("/sellcrypto", methods=["GET", "POST"])
+@login_required
 def sellcrypto():
-    username = User.query.filter(User.id==int(session["user_id"])).first()
-    # Get all stocks as objects portfolio
-    username = User.query.filter(User.id==int(session["user_id"])).first()
-    # Save the logged user
-    LoggedUser = username.username
-    # Get user's cryptos
-    cryptos = Cryptocurrency.query.filter_by(username=username.username).all()
-    cash = float(username.cash)
     if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
