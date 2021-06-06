@@ -175,7 +175,7 @@ class Cryptocurrency(db.Model):
 def index():
     #Show portfolio of stocks
     # Store the User object of the logged user
-    username = User.query.filter(User.id==int(session["users.id"])).first()
+    username = User.query.filter(User.id==int(session["user_id"])).first()
 
     # Get all stocks as objects portfolio
     stocks = Portfolio.query.filter_by(username=username.username).all()
@@ -208,6 +208,7 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
+    username = User.query.filter(User.id==int(session["user_id"])).first()
        # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         symbol = request.form["symbol"]
@@ -320,7 +321,7 @@ def login():
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["users.id"] = rows[0].id
+        session["user_id"] = rows[0].id
 
         # Redirect user to home page
         return redirect("/")
@@ -349,6 +350,7 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         # Saves stock's info entered by user
         share = lookup(request.form["symbol"])
@@ -528,6 +530,7 @@ def sell():
 @app.route("/customer_service", methods=["GET","POST"])
 @login_required
 def customer_service():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == "POST":
         email = request.form["email"]
         message = request.form["message"]
@@ -627,6 +630,7 @@ def crypto():
 @app.route("/buycrypto", methods=["GET", "POST"])
 @login_required
 def buycrypto():
+    username = User.query.filter(User.id==int(session["user_id"])).first()
     if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
         cash = float(username.cash)
@@ -678,58 +682,59 @@ def buycrypto():
 # Sell crypto
 @app.route("/sellcrypto", methods=["GET", "POST"])
 def sellcrypto():
-        # Get all stocks as objects portfolio
+    username = User.query.filter(User.id==int(session["user_id"])).first()
+    # Get all stocks as objects portfolio
+    username = User.query.filter(User.id==int(session["user_id"])).first()
+    # Save the logged user
+    LoggedUser = username.username
+    # Get user's cryptos
+    cryptos = Cryptocurrency.query.filter_by(username=username.username).all()
+    cash = float(username.cash)
+    if request.method == 'POST':
         username = User.query.filter(User.id==int(session["user_id"])).first()
-        # Save the logged user
-        LoggedUser = username.username
-        # Get user's cryptos
-        cryptos = Cryptocurrency.query.filter_by(username=username.username).all()
         cash = float(username.cash)
-        if request.method == 'POST':
-            username = User.query.filter(User.id==int(session["user_id"])).first()
-            cash = float(username.cash)
-            LoggedUser = username.username
+        LoggedUser = username.username
 
-            CryptoSymbol = request.form["cryptosmbl"]
-            quantity = float(request.form["sellamount"])
+        CryptoSymbol = request.form["cryptosmbl"]
+        quantity = float(request.form["sellamount"])
 
-            Crypto = crypto_info(CryptoSymbol)
+        Crypto = crypto_info(CryptoSymbol)
 
-            price = float(Crypto['price'])
+        price = float(Crypto['price'])
 
+        # Check if stock exists in user's Portfolio
+        shares = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==CryptoSymbol)).all()
+        quantityOwed = shares[0].shares
+
+        if quantity > quantityOwed:
+            return apology('Enter a lower quantity', 400)
+        else:
+            cryptoSold = quantity * price
+            # Update user's balance
+            username.cash = cash + cryptoSold
+
+            # Add details to History table
+            operation='SELL'
+            symbol = CryptoSymbol
+            price = price
+            shares = quantity
+            date = datetime.now()
+
+            # Add the transaction to the user's history
+            update_History = History(LoggedUser,operation, symbol, price, shares, date)
+            db.session.add(update_History)
+            db.session.commit()
             # Check if stock exists in user's Portfolio
-            shares = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==CryptoSymbol)).all()
-            quantityOwed = shares[0].shares
+            symbol_exists = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).all()
+            # Add stock to user's Portfolio if it doesn't exist
+            user_id = username.id
 
-            if quantity > quantityOwed:
-                return apology('Enter a lower quantity', 400)
-            else:
-                cryptoSold = quantity * price
-                # Update user's balance
-                username.cash = cash + cryptoSold
-
-                # Add details to History table
-                operation='SELL'
-                symbol = CryptoSymbol
-                price = price
-                shares = quantity
-                date = datetime.now()
-
-                # Add the transaction to the user's history
-                update_History = History(LoggedUser,operation, symbol, price, shares, date)
-                db.session.add(update_History)
-                db.session.commit()
-                # Check if stock exists in user's Portfolio
-                symbol_exists = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).all()
-                # Add stock to user's Portfolio if it doesn't exist
-                user_id = username.id
-
-                # If stock exists, get it's ID
-                updatePortfolio = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).first()
-                id = updatePortfolio.transaction_id
-                UpdateNow = Cryptocurrency.query.get(id)
-                UpdateNow.shares -= Decimal(shares)
-                db.session.commit()
+            # If stock exists, get it's ID
+            updatePortfolio = Cryptocurrency.query.filter(and_(Cryptocurrency.username==LoggedUser, Cryptocurrency.symbol==symbol)).first()
+            id = updatePortfolio.transaction_id
+            UpdateNow = Cryptocurrency.query.get(id)
+            UpdateNow.shares -= Decimal(shares)
+            db.session.commit()
         return render_template("crypto.html")
 
 
