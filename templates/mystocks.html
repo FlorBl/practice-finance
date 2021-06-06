@@ -15,10 +15,10 @@
 
 <script>
       const stock = JSON.parse({{stocks|tojson}});
-      console.log(stock);
+      
       document.querySelector(".container").innerHTML = JSON.stringify(stock, null, 2);
 
-console.log(stock[1]['username'])
+
 
 // console.log('Hello ' +stock[1]['username']+ ' you own ' +stock[1]['shares']+ ' of ' + stock[1]['symbol'])
 
@@ -30,7 +30,7 @@ for (let i in stock){
     stockOwned = "<li>"+stock[i]['symbol']+"<li>";
     html.push(stockOwned);
 }
-    console.log(html)
+    
 
 mystocks.insertAdjacentHTML('beforeend',html);
 

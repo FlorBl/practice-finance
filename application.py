@@ -15,11 +15,16 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from decimal import Decimal
 import urllib.request
 import urllib
+
+
+
 # Configure application
 app = Flask(__name__)
 
 ENV = ''
 
+def default(o):
+    return o._asdict()
 
 if ENV == 'dev':
     app.debug = True # If in Devlopment Mode = True
@@ -586,7 +591,7 @@ def crypto():
     username = User.query.filter(User.id==int(session["user_id"])).first()
 
     # Info about our 6 Cryptocurrencies
-    url = "https://api.nomics.com/v1/currencies/ticker?key=8359a16b23c77eed9ab3298d72106e7783bc32dc&ids=BTC,ETH,BNB,ADA,XRP,DOGE&interval=1d,30d&convert=USD&per-page=100&page=1"
+    url = "https://api.nomics.com/v1/currencies/ticker?key=8359a16b23c77eed9ab3298d72106e7783bc32dc&ids=BTC,ETH,BNB,ADA,XRP,DOGE,SHIBA,DOT,LTC,MATIC,SHIB&interval=1d,30d&convert=USD&per-page=100&page=1"
 
     crypto = urllib.request.urlopen(url)
     cryptojson = crypto.read()
@@ -605,6 +610,7 @@ def crypto():
 
     # Get all cryptos as objects portfolio
     cryptosOwned = Cryptocurrency.query.filter_by(username=username.username).all()
+
 
     # The list for all totals
     total_sum = []

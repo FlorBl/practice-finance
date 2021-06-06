@@ -115,11 +115,10 @@ document.addEventListener('DOMContentLoaded', function(){
       for(i = 0; i < users.length; i++){
           user.push(users[i]);
       }
-      console.log(user);
 
     userCheck.addEventListener('keyup', function(){
         username = userCheck.value;
-        console.log(username)
+
         if(user.includes(username)){
             $("#divSearchUsername").html("Username already exists!");
             $("#divSearchUsername").css('color', 'red');
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function(){
 })
 document.addEventListener('DOMContentLoaded', function(){
     const emails = JSON.parse({{emails|tojson}});
-    console.log(emails);
     var emailCheck = document.getElementById('emailCheck');
 
     var emailSearch = '';
@@ -153,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
     emailCheck.addEventListener('keyup', function(){
         emailSearch = emailCheck.value;
-        console.log(emailSearch)
         if (email.includes(emailSearch)){
             $("#divEmailSearch").html("An account already exists with this email!");
             $("#divEmailSearch").css('color', 'red');

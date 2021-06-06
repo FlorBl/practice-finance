@@ -381,7 +381,6 @@ Login.html
 
 #moving{
     bottom: 5%;
-    border:1px solid red;
     margin: 20px;
     padding: 20px;
 }
@@ -444,7 +443,6 @@ Login.html
     #moving{
         margin-top: 20% !important;
         font-size: 40px !important;
-        border:1px solid blue;
     }
     #moving input{
         font-size:25px ;

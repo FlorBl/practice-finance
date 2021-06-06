@@ -46,7 +46,6 @@ $(document).ready(function(){
     
     var user_email = JSON.parse({{emails|tojson}});
 
-    console.log(user_email)
 
     $('#deletebutton').click(function(){
         
@@ -55,11 +54,10 @@ $(document).ready(function(){
         $('#errorMessage').html('Email does not match');
         $('#errorMessage').css('color', 'red');  
         $('#deletebutton').attr('type', 'button');
-        console.log(emailInput)
         var reason = $('#reason :selected').val();
         var email = $('#emailmatch').val();
         var message = $('textarea#userMessage').val();
-        console.log("Reason: "+reason+" Email: "+email+" Message: "+message)
+
     }
     else{
      $("#a").html("Email does match");

@@ -40,28 +40,15 @@ $(document).ready(function(){
 var message = document.getElementById('message');
 var insertbalance = document.querySelector('cashcontainer');
   const cash = JSON.parse({{balance|tojson}});
-  console.log(cash);
+  
      
 var userbalance = document.querySelector(".cashcontainer").innerHTML = cash;
-console.log(userbalance);
+
 
 $(document).on('keyup', function(){
 var shares = $('input[name="shares"]').val();
 var price = document.getElementById('price').innerText;
 var total = shares * price;
-
-console.log(`Shares: ${shares}, Price: ${price}, Total: ${total}... User's balance: ${userbalance}`);
-
-if (userbalance < total){
-      console.log('Insufficent funds')
-  }
-  else 
-  {
-    console.log('working');
-
-  }
-
-
 })
 
 
