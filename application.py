@@ -591,7 +591,7 @@ def crypto():
     username = User.query.filter(User.id==int(session["user_id"])).first()
 
     # Info about our 6 Cryptocurrencies
-    url = "https://api.nomics.com/v1/currencies/ticker?key=8359a16b23c77eed9ab3298d72106e7783bc32dc&ids=BTC,ETH,BNB,ADA,XRP,DOGE,SHIBA,DOT,LTC,MATIC,SHIB&interval=1d,30d&convert=USD&per-page=100&page=1"
+    url = "https://api.nomics.com/v1/currencies/ticker?key=8359a16b23c77eed9ab3298d72106e7783bc32dc&ids=BTC,ETH,BNB,ADA,DOGE,DOT,LTC&interval=1d,30d&convert=USD&per-page=100&page=1"
 
     crypto = urllib.request.urlopen(url)
     cryptojson = crypto.read()
