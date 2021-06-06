@@ -169,7 +169,7 @@ class Cryptocurrency(db.Model):
         self.date = date
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
     #Show portfolio of stocks
@@ -277,7 +277,7 @@ def buy():
         return render_template("buy.html")
 
 
-@app.route("/history")
+@app.route("/history", methods=["GET", "POST"])
 @login_required
 def history():
     """Show history of transactions"""
