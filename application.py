@@ -23,8 +23,6 @@ app = Flask(__name__)
 
 ENV = ''
 
-def default(o):
-    return o._asdict()
 
 if ENV == 'dev':
     app.debug = True # If in Devlopment Mode = True

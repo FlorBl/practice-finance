@@ -1,7 +1,9 @@
+
 nav .navbar-brand
 {
     /* size for brand */
     font-size: xx-large;
+    
 }
 
 .dropdown-menu a {
@@ -114,13 +116,7 @@ body {
     
 }
 
-/*
-.animate__animated.animate__bounce {
-    --animate-delay: 2s;
-    --animate-duration: 2s;
-  }
 
-*/
 
 /* Content.html --> /content */
 
@@ -128,11 +124,6 @@ body {
 .contentDiv li:before{
     content:'✓ ';
 }
-
-/*
-    background-color: #f8ddae;
-    color: DarkSlateGray;
-*/
 
 .divThistle{
     background-color: #835c79;
@@ -195,9 +186,6 @@ background-color: #54575a !important;
 }
 .btn:hover, .btn-primary:hover{
     background-color: lightslategrey !important;
-}
-.fixed{
-    position: fixed !important;
 }
 
 /* Section Footer */
@@ -437,9 +425,7 @@ Login.html
 
 /* 769px — 1024px: Small screens, laptops */
 @media (max-width:1024px) and (min-width:769px) {
-    body{
-        font-size:30px;
-    }
+
     #moving{
         margin-top: 20% !important;
         font-size: 40px !important;
@@ -463,7 +449,6 @@ Login.html
     }
     #containerz{
         margin:0 auto;
-        height:100vh;
         display: flex;
         justify-content: center;
     }
@@ -506,51 +491,10 @@ Login.html
             font-size:60px !important;
         }
 }
-@media (max-width:280px) and (min-width:100px)  {
-    #firstContainer{
-        flex-direction: column;
-    }
-
-    #containerz{
-        margin:0 auto;
-        height:100vh;
-        display: flex;
-        justify-content: center;
-    }
-     #contentTitle{
-         padding: 5px 10px 5px;
-         width: 100%;
-         font-size: 30px;
-     }
-     #containerz div{
-        height: 180px;
-        width:90vw;
-        padding: 20px;
-        }
-     #my-chart.column{
-        width: 100%;
-     }
-     #form-content{
-         padding-top:100px;
-         height:100vh;
-     }
-     #contactForm{
-         margin: 0 auto;
-         width: 90vw;
-         border-radius: 15px;
-     }
-     #arrow{
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        font-size: 3rem;
-     }
-}
 
 /* 1025px — 1200px: Desktops, large screens */
 @media (max-width:1200px) and (min-width:1025px) {
-    body{font-size: 40px;
-    background-color: aqua;}
+
     #firstContainer{
         height: 100vh;
     }
@@ -786,3 +730,20 @@ register.html
 
 
 /* Crypto Forms */
+
+
+
+/* GRID TEST */
+.containercss {  
+    display: grid;
+    grid-gap:5px;  
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-rows: repeat(2, 100px);  
+}
+
+.containercss div{
+    background-color: #ff727d;
+    height: max-content;
+    margin: 15px;
+
+}

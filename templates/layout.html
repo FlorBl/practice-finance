@@ -68,14 +68,14 @@
 
     <body>
         <nav class="navbar navbar-expand-md navbar-light bg-light border">
-            <a class="navbar-brand" href="{{ url_for('welcome') }}"><span class="red">Finance</span></a>
+            <a class="navbar-brand"  href="{% if session.user_id %}{{ url_for('index') }}{% else %}{{ url_for('welcome') }}{% endif %} " ><span class="red">Finance</span></a>
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse  navbar-collapse" id="navbar">
                 {% if session.user_id %}
                     <ul class="navbar-nav mr-auto mt-2 ">
-                        <li class="nav-item"><a class="nav-link" href="{{ url_for('buy') }}">Buy</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('quote') }}">Buy</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('sell') }}">Sell</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('crypto') }}">Crypto</a></li>
                         <li class="nav-item"><a class="nav-link" href="{{ url_for('history') }}">History</a></li>
@@ -86,7 +86,6 @@
                               <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> Settings
                               <span class="caret"></span></button>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Account Info</a></li>
                                 <li><a href="{{ url_for('customer_service') }}">Customer service</a></li>
                                 <li><a href="{{ url_for('rate') }}">Delete my account</a></li>
                               </ul>

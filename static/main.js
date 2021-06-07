@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function(){
+
 var apiKey = "pk_8a2179db5a5c4bd4a1c8e6e2d6e51cc8";
  // variable 
 var inputt = document.getElementById("symbolone");
