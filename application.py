@@ -21,8 +21,10 @@ import urllib
 # Configure application
 app = Flask(__name__)
 
-ENV = ''
-
+ENV = 'dev'
+#$env:FLASK_DEBUG="development"
+#$env:FLASK_APP="application.py"
+#flask run
 
 if ENV == 'dev':
     app.debug = True # If in Devlopment Mode = True

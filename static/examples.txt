@@ -1,0 +1,7 @@
+box-sizing:border-box;  If 2 divs have the same height/width but one looks biggers because of its padding etc. This fixes the problem.
+
+width: auto;    Default value. The browser calculates the width.
+
+overflow-x: hidden;    Hide the horizontal scrollbar for overflow content
+
+overflow-y: hidden;    Hide the vertical scrollbar for overflow content

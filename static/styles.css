@@ -1,4 +1,6 @@
-
+div{
+    border: 1px solid olivedrab;
+}
 nav .navbar-brand
 {
     /* size for brand */
@@ -70,7 +72,7 @@ li {
 }
 
 html, body {
-    box-sizing:border-box;
+    box-sizing:border-box; 
 }
 body {
     width: auto;
@@ -78,6 +80,7 @@ body {
     margin: 0;
     background-color: rgba(237,242,243,255);
 }
+/*
 .flex-container {
     height: 100%;
     padding: 0;
@@ -90,16 +93,10 @@ body {
     align-items: center;
     justify-content: center;
 }
+*/
 .row {
     width: auto;
 }
-
-.stockk {
-
-    line-height: 1.7;
-    list-style: none;
-    margin: 0;
-  }
 
 .insufficent {
     margin:auto;
@@ -120,21 +117,14 @@ body {
 
 /* Content.html --> /content */
 
-
+.contentDiv li{
+    margin:0;
+    padding:0;
+}
 .contentDiv li:before{
     content:'✓ ';
 }
 
-.divThistle{
-    background-color: #835c79;
-    color: white;
-}
-
-
-#getStarted a{
-    color: white;
-    
-}
 
 a:link{
     text-decoration: none;
@@ -167,8 +157,7 @@ width */
 
 #firstContainer{
     margin-top: -80px;
-    position:sticky;
-    height: 80vh;
+    height: 100vh;
     width: auto;
     display: flex;
     flex-direction: column;
@@ -191,12 +180,11 @@ background-color: #54575a !important;
 /* Section Footer */
 #contactForm{
     margin: 0 auto; /* Aligns the DIV in the center */
-    background-color: rgba(181,212,204, 0.4);;
-    width: 300px;
-    padding-top: 10px;
-    margin-bottom: 50px;
+    background-color: rgba(181,212,204, 0.4);
+    width: auto;
+    max-width: 300px;
     text-align: center; /* Align everything in the center */
-    top:100%;
+    border-radius: 15px;
 }
 #contactBtn{
     border-radius: 20px;
@@ -205,26 +193,33 @@ background-color: #54575a !important;
     background-color: white;
 }
 
-/* Screen sizes:*/
+/* Screen sizes:
+Fix from width 793px */
 #containerz{
-    height: 100vh;
-    width: auto;
-    margin-top: 200px;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;  
+    grid-gap: 5px;  
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-rows: repeat(2, 300px);
+    height: auto;
 }
 #containerz div{
-height: 250px;
+height: auto;
   background-color: rgba(181,212,204, 0.4);
   border-radius: 15px;
-  padding: 50px;
-
+  border: 1px ;
+  padding: 20px;
+  margin: 15px;
+  border: 1px solid saddlebrown;
 }
 
 #containerz div ul li:before {
     padding-right: 0; 
     content: '✓ ';
   }
+
+  #containerz div h3{
+    padding-bottom: 20px;
+}
 
 /* _________________ Chart _______________ */
 
@@ -300,6 +295,10 @@ height: 250px;
     height: 100px;
     color:rgba(181,212,204, 0.9);
     text-align: center;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-size: 3rem;
 }
 
 /*
@@ -326,23 +325,57 @@ Pixel 2 XL
         flex-direction: column;
     }
 
-    #containerz{
-        margin:0 auto;
-        height:100vh;
-        display: flex;
-        justify-content: center;
-    }
      #contentTitle{
          padding: 5px 10px 5px;
          width: 100%;
          font-size: 30px;
      }
-     #containerz div{
-        height: 180px;
-        width:90vw;
-        padding: 20px;
-        }
      #my-chart.column{
+        width: 100%;
+     }
+     #form-content{
+         padding-top:100px;
+         height:100vh;
+     }
+
+     @media (orientation: landscape) {
+
+        #firstContainer{
+            height: 100vh;
+            border: 2px solid white;
+        }
+    }
+}
+
+/* Ipads, Tablets */
+
+@media (max-width:768px) and (min-width:680px) {
+
+    #contentTitle{
+        padding:50px 35px 0;
+        font-size: 50px;
+        width: 100%;
+    }
+
+        #my-chart.column{
+            margin-right:20px;
+            width: 100%;
+         }
+
+}
+
+/* 769px — 1024px: Small screens, laptops */
+@media (max-width:1024px) and (min-width:769px) {
+
+
+     #contentTitle{
+        padding:25px 35px 0;
+        font-size: 50px;
+        width: 100%;
+     }
+
+     #my-chart.column{
+        margin-right:50px;
         width: 100%;
      }
      #form-content{
@@ -352,199 +385,24 @@ Pixel 2 XL
      #contactForm{
          border-radius: 15px;
      }
-     #arrow{
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        font-size: 3rem;
-     }
-}
-
-/* Ipads, Tablets */
-
-@media (max-width:768px) and (min-width:680px) {
-    /* 
-Login.html
-*/
-
-#moving{
-    bottom: 5%;
-    margin: 20px;
-    padding: 20px;
-}
-    #firstContainer{
-    }
-    #contentTitle{
-        padding:50px 35px 0;
-        font-size: 50px;
-        width: 100%;
-    }
-    #containerz{
-        margin:0 auto;
-        height:100vh;
-        display: flex;
-        justify-content: center;
-    }
-    #containerz div{
-        width:90vw;
-        background-color: rgba(181,212,204, 0.8);
-        padding: 20px;
-        font-size: 30px;
-        }
-    #containerz div h3{
-        font-size: 40px;
-        padding-bottom: 20px;
-    }
-        #my-chart.column{
-            margin-top: 150px;
-            margin-right:20px;
-            width: 100%;
-         }
-        #arrow{
-            width: 100%;
-            position: absolute;
-            bottom: 5%;
-            font-size: 5rem;
-         }
-         #form-content{  
-            padding-top:100px;
-            height:100vh;
-        }
-
-         #contactForm{
-            transform: scale(1.5, 1.5);
-            margin-top: 20%;
-            font-size: 40px;
-            border-radius: 15px;
-        }
-       #contactForm input{
-            font-size: 20px;
-
-        }
-}
-
-/* 769px — 1024px: Small screens, laptops */
-@media (max-width:1024px) and (min-width:769px) {
-
-    #moving{
-        margin-top: 20% !important;
-        font-size: 40px !important;
-    }
-    #moving input{
-        font-size:25px ;
-    }
-    #moving h3{
-        font-size:40px;
-    }
-    #moving button{
-        font-size:25px;
-    }
-    #firstContainer{
-        height: 100vh;
-    }
-    #contentTitle{
-        padding:50px 35px 0;
-        font-size: 70px;
-        width: 100%;
-    }
-    #containerz{
-        margin:0 auto;
-        display: flex;
-        justify-content: center;
-    }
-    #containerz div{
-        width:90vw;
-        height: fit-content;
-        font-size: 40px;
-        }
-    #containerz div h3{
-        font-size: 60px;
-        padding-bottom: 20px;
-    }
-        #my-chart.column{
-            margin-top: 150px;
-            margin-right:20px;
-            width: 100%;
-         }
-        #arrow{
-            width: 100%;
-            position: absolute;
-            font-size: 5rem;
-            bottom: 5%;
-         }
-         #form-content{  
-            padding-top:100px;
-            height:100vh;
-        }
-
-         #contactForm{
-            transform: scale(1.9, 1.9);
-            margin-top: 40%;
-            font-size: 40px;
-            border-radius: 15px;
-        }
-       #contactForm input{
-            font-size: 20px;
-
-        }
-        .navbar-brand{
-            font-size:60px !important;
-        }
 }
 
 /* 1025px — 1200px: Desktops, large screens */
 @media (max-width:1200px) and (min-width:1025px) {
 
-    #firstContainer{
-        height: 100vh;
-    }
     #contentTitle{
-        padding:50px 35px 0;
-        font-size: 70px;
+        padding:25px 35px 0;
+        font-size: 50px;
         width: 100%;
+        background-color: bisque;
     }
-    #containerz{
-        margin:0 auto;
-        height:100vh;
-        display: flex;
-        justify-content: center;
-    }
-    #containerz div{
-        width:100px;
-        margin-right: 20px;
-        height: fit-content;
-        font-size: 40px;
-        }
-    #containerz div h3{
-        font-size: 60px;
-        padding-bottom: 20px;
-    }
+
         #my-chart.column{
-            margin-top: 150px;
-            margin-right:20px;
+            margin-right:50px;
             width: 100%;
+            
          }
-        #arrow{
-            width: 100%;
-            position: absolute;
-            font-size: 5rem;
-            bottom: 5%;
-         }
-         #form-content{  
-            padding-top:100px;
-            height:100vh;
-        }
 
-         #contactForm{
-            transform: scale(1.9, 1.9);
-            margin-top: 40%;
-            font-size: 40px;
-            border-radius: 15px;
-        }
-       #contactForm input{
-            font-size: 20px;
-
-        }
         .navbar-brand{
             font-size:60px !important;
         }
@@ -557,46 +415,16 @@ Login.html
             height: 100vh;
         }
         #contentTitle{
-            padding:50px 35px 0;
+            padding:25px 35px 0;
             font-size: 60px;
             width: 100%;
         }
-        #containerz{
-            height: 70vh;
-            margin:0 auto;
-            display: flex;
-            flex-wrap: nowrap;
-            justify-content: center;
-        }
-        #containerz div{
-            margin: 30px;
-            height:400px;
-            width: 400px;
-            }
-        #containerz div h3{
-            padding-bottom: 20px;
-        }
+
             #my-chart.column{
-                margin-top: 50px;
-                margin-right:20px;
+                margin-right:50px;
                 width: 100%;
              }
-            #arrow{
-                width: 100%;
-                position: absolute;
-                font-size: 5rem;
-                bottom: 5%;
-             }
-             #form-content{  
-                padding-top:100px;
-                height:100vh;
-            }
     
-             #contactForm{
-                transform: scale(1.1, 1.1);
-                margin-top: 5%;
-                border-radius: 15px;
-            }
             .navbar-brand{
                 font-size:60px !important;
                 font-family: 'Times New Roman';
@@ -741,7 +569,7 @@ register.html
     grid-template-rows: repeat(2, 100px);  
 }
 
-.containercss div{
+.containercss div {
     background-color: #ff727d;
     height: max-content;
     margin: 15px;
