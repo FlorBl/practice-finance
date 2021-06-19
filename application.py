@@ -21,7 +21,7 @@ import urllib
 # Configure application
 app = Flask(__name__)
 
-ENV = 'dev'
+ENV = ''
 #$env:FLASK_DEBUG="development"
 #$env:FLASK_APP="application.py"
 #flask run
