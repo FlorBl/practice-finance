@@ -529,17 +529,6 @@ def sell():
     return jsonify({'error' : 'Missing data!'})
 
 
-@app.route("/customer_service", methods=["GET","POST"])
-@login_required
-def customer_service():
-    if request.method == "POST":
-        email = request.form["email"]
-        message = request.form["message"]
-        username = db.execute("SELECT username FROM users WHERE id = (:id)", id=int(session["user_id"]))[0]["username"]
-
-        db.execute("INSERT INTO customer_service (username, message, email) VALUES (:username, :message, :email)", username=username, message=message, email=email)
-    return render_template("customer_service.html")
-
 @app.route("/rate", methods=["GET", "POST"])
 @login_required
 def rate():

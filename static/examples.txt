@@ -5,3 +5,10 @@ width: auto;    Default value. The browser calculates the width.
 overflow-x: hidden;    Hide the horizontal scrollbar for overflow content
 
 overflow-y: hidden;    Hide the vertical scrollbar for overflow content
+
+height: auto;   the element will automatically adjust its height to allow its content to be displayed correctly.
+
+Flex
+display: flex;     Aligns divs from left to right.
+flex-wrap: wrap;   Aligns divs from left to right, wraps them when the page gets smaller, they keep the same size.
+flex-wrap: wrap;    A container with "flex-wrap: nowrap;" will never wrap its items.

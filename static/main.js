@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function(){
-    screen.orientation.lock();   // webkit only
-    screen.lockOrientation("orientation");
 var apiKey = "pk_8a2179db5a5c4bd4a1c8e6e2d6e51cc8";
  // variable 
 var inputt = document.getElementById("symbolone");
@@ -33,6 +31,7 @@ function renderHTML(ourData){
     var stock;
     stock = "<li><a href='#' name='stock' onclick='myFunction(this.id)' id='"+ourData['symbol']+"'>" + ourData['companyName'] + "</a></li>"
     htmlString.push(stock);
+
 
     // Copy all the value into another array and keep only unique items!
 
